@@ -1,7 +1,7 @@
 #region License
 /*
 MIT License
-Copyright ©2003-2007 Tao Framework Team
+Copyright ?003-2007 Tao Framework Team
 http://www.taoframework.com
 All rights reserved.
 
