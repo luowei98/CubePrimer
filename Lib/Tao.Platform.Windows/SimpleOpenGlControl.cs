@@ -49,14 +49,14 @@ namespace Tao.Platform.Windows {
         private IntPtr deviceContext = IntPtr.Zero;                         // GDI device context
         private IntPtr renderingContext = IntPtr.Zero;                      // Rendering context
         private IntPtr windowHandle = IntPtr.Zero;                          // Holds our window handle
-        private bool autoCheckErrors = false;                               // Should we provide glGetError()?
-        private bool autoFinish = false;                                    // Should we provide a glFinish()?
+        private bool autoCheckErrors;                                       // Should we provide glGetError()?
+        private bool autoFinish;                                            // Should we provide a glFinish()?
         private bool autoMakeCurrent = true;                                // Should we automatically make the rendering context current?
         private bool autoSwapBuffers = true;                                // Should we automatically swap buffers?
-        private byte accumBits = 0;                                         // Accumulation buffer bits
+        private byte accumBits;                                             // Accumulation buffer bits
         private byte colorBits = 32;                                        // Color buffer bits
         private byte depthBits = 16;                                        // Depth buffer bits
-        private byte stencilBits = 0;                                       // Stencil buffer bits
+        private byte stencilBits;                                           // Stencil buffer bits
         private int errorCode = Gl.GL_NO_ERROR;                             // The GL error code
 
         private int logScaleX = 96;                                         // DPI Resolution in X dir
@@ -69,13 +69,8 @@ namespace Tao.Platform.Windows {
         /// Gets the number of logical pixels or dots per inch (dpi) in X-direction
         /// </summary>
         [Category("OpenGL Properties"), Description("Logical pixels per inch in X-direction.")]
-        public int LogScaleX
-        {
-            get
-            {
-                return logScaleX;
-            }
-        }
+        public int LogScaleX => logScaleX;
+
         #endregion
 
         #region LogScaleY
@@ -83,13 +78,8 @@ namespace Tao.Platform.Windows {
         /// Gets the number of logical pixels or dots per inch (dpi) in Y-direction
         /// </summary>
         [Category("OpenGL Properties"), Description("Logical pixels per inch in Y-direction.")]
-        public int LogScaleY
-        {
-            get
-            {
-                return logScaleY;
-            }
-        }
+        public int LogScaleY => logScaleY;
+
         #endregion
 
         #region AccumBits
@@ -253,10 +243,9 @@ namespace Tao.Platform.Windows {
         /// </summary>
         /// <param name="disposing">Was the disposed manually called?</param>
         protected override void Dispose(bool disposing) {
-            if(disposing) {
-                if(components != null) {
-                    components.Dispose();
-                }
+            if(disposing)
+            {
+                components?.Dispose();
             }
             DestroyContexts();
             base.Dispose(disposing);
@@ -272,11 +261,11 @@ namespace Tao.Platform.Windows {
             try {
                 Assembly assembly = Assembly.GetExecutingAssembly();
                 using(Stream imageStream = assembly.GetManifestResourceStream("TaoButton.jpg")) {
-                    this.BackgroundImage = (Image) Bitmap.FromStream(imageStream);
+                    if (imageStream != null) BackgroundImage = Image.FromStream(imageStream);
                 }
-            } catch (System.Exception e) {
-				e.ToString();
-                this.BackgroundImage = null;
+            } catch (Exception) {
+				//e.ToString();
+                BackgroundImage = null;
             }
         }
         #endregion InitializeBackground()
@@ -286,12 +275,12 @@ namespace Tao.Platform.Windows {
         ///     Required for designer support.
         /// </summary>
         private void InitializeComponent() {
-            this.components = new System.ComponentModel.Container();
+            components = new Container();
             // 
             // SimpleOpenGlControl
             // 
-            this.BackColor = System.Drawing.Color.Black;
-            this.Size = new System.Drawing.Size(50, 50);
+            BackColor = Color.Black;
+            Size = new Size(50, 50);
         }
         #endregion InitializeComponent()
 
@@ -300,11 +289,11 @@ namespace Tao.Platform.Windows {
         ///     Initializes the control's styles.
         /// </summary>
         private void InitializeStyles() {
-            this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
-            this.SetStyle(ControlStyles.DoubleBuffer, false);
-            this.SetStyle(ControlStyles.Opaque, true);
-            this.SetStyle(ControlStyles.ResizeRedraw, true);
-            this.SetStyle(ControlStyles.UserPaint, true);
+            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            SetStyle(ControlStyles.DoubleBuffer, false);
+            SetStyle(ControlStyles.Opaque, true);
+            SetStyle(ControlStyles.ResizeRedraw, true);
+            SetStyle(ControlStyles.UserPaint, true);
         }
         #endregion InitializeStyles()
 
@@ -335,7 +324,7 @@ namespace Tao.Platform.Windows {
         ///     forcing a redraw to occur.
         /// </summary>
         public void Draw() {
-            this.Invalidate();
+            Invalidate();
         }
         #endregion Draw()
 
@@ -344,9 +333,7 @@ namespace Tao.Platform.Windows {
         ///     Creates the OpenGL contexts.
         /// </summary>
         public void InitializeContexts() {
-            int pixelFormat;                                                // Holds the selected pixel format
-
-            windowHandle = this.Handle;                                     // Get window handle
+            windowHandle = Handle;                                          // Get window handle
 
             if(windowHandle == IntPtr.Zero) {                               // No window handle means something is wrong
                 MessageBox.Show("Window creation error.  No window handle.", "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -359,8 +346,8 @@ namespace Tao.Platform.Windows {
             pfd.dwFlags = Gdi.PFD_DRAW_TO_WINDOW |                          // Format must support windowed mode
                         Gdi.PFD_SUPPORT_OPENGL |                            // Format must support OpenGL
                         Gdi.PFD_DOUBLEBUFFER;                               // Must support double buffering
-            pfd.iPixelType = (byte) Gdi.PFD_TYPE_RGBA;                      // Request an RGBA format
-            pfd.cColorBits = (byte) colorBits;                              // Select our color depth
+            pfd.iPixelType = Gdi.PFD_TYPE_RGBA;                             // Request an RGBA format
+            pfd.cColorBits = colorBits;                                     // Select our color depth
             pfd.cRedBits = 0;                                               // Individual color bits ignored
             pfd.cRedShift = 0;
             pfd.cGreenBits = 0;
@@ -377,7 +364,7 @@ namespace Tao.Platform.Windows {
             pfd.cDepthBits = depthBits;                                     // Z-buffer (depth buffer)
             pfd.cStencilBits = stencilBits;                                 // No stencil buffer
             pfd.cAuxBuffers = 0;                                            // No auxiliary buffer
-            pfd.iLayerType = (byte) Gdi.PFD_MAIN_PLANE;                     // Main drawing layer
+            pfd.iLayerType = Gdi.PFD_MAIN_PLANE;                            // Main drawing layer
             pfd.bReserved = 0;                                              // Reserved
             pfd.dwLayerMask = 0;                                            // Layer masks ignored
             pfd.dwVisibleMask = 0;
@@ -389,7 +376,7 @@ namespace Tao.Platform.Windows {
                 Environment.Exit(-1);
             }
 
-            pixelFormat = Gdi.ChoosePixelFormat(deviceContext, ref pfd);    // Attempt to find an appropriate pixel format
+            var pixelFormat = Gdi.ChoosePixelFormat(deviceContext, ref pfd);
             if(pixelFormat == 0) {                                          // Did windows not find a matching pixel format?
                 MessageBox.Show("Can not find a suitable PixelFormat.", "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(-1);
@@ -446,10 +433,10 @@ namespace Tao.Platform.Windows {
         /// </summary>
         /// <param name="e">The paint event arguments.</param>
         protected override void OnPaint(PaintEventArgs e) {
-            if(this.DesignMode) {
-                e.Graphics.Clear(this.BackColor);
-                if (this.BackgroundImage != null)
-                    e.Graphics.DrawImage(this.BackgroundImage, this.ClientRectangle, 0, 0, this.BackgroundImage.Width, this.BackgroundImage.Height, GraphicsUnit.Pixel);
+            if(DesignMode) {
+                e.Graphics.Clear(BackColor);
+                if (BackgroundImage != null)
+                    e.Graphics.DrawImage(BackgroundImage, ClientRectangle, 0, 0, BackgroundImage.Width, BackgroundImage.Height, GraphicsUnit.Pixel);
                 e.Graphics.Flush();
                 return;
             }
