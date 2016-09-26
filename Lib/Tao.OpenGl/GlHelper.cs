@@ -1,4 +1,5 @@
 #region License
+
 /*
 MIT License
 Copyright ?003-2007 Tao Framework Team
@@ -23,96 +24,99 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+
 #endregion License
 
 #region --- Using Directives ---
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Runtime.InteropServices;
-using System.Reflection;
+using System.ComponentModel;
 using System.Diagnostics;
-using System.Reflection.Emit;
 using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
 
 #endregion
 
 namespace Tao.OpenGl
 {
     /// <summary>
-    /// OpenGL binding for .NET, implementing OpenGL 2.1, plus extensions.
+    ///     OpenGL binding for .NET, implementing OpenGL 2.1, plus extensions.
     /// </summary>
     /// <remarks>
-    /// <para>
-    /// This class contains all OpenGL enums and functions defined in the 2.1 specification.
-    /// The official .spec files can be found at: http://opengl.org/registry/.
-    /// </para>
-    /// <para>
-    /// We rely on static initialization to obtain the entry points for OpenGL functions.
-    /// Please ensure that a valid OpenGL context has been made current in the pertinent thread <b>before</b>
-    /// any OpenGL functions are called (toolkits like GLUT, SDL or GLFW will automatically take care of
-    /// the context initialization process). Without a valid OpenGL context, we will only be able
-    /// to retrieve statically exported entry points (typically corresponding to OpenGL version 1.1 under Windows,
-    /// 1.3 under Linux and 1.4 under Windows Vista), and extension methods will need to be loaded manually.
-    /// </para>
-    /// <para>
-    /// If you prefer to have more control on extension loading, you can use the
-    /// ReloadFunctions or ReloadFunction methods to manually force the initialisation of OpenGL entry points.
-    /// The ReloadFunctions method should be called whenever you change an existing visual or pixelformat. This
-    /// generally happens when you change the color/stencil/depth buffer associated with a window (but probably
-    /// not the resolution). This may or may not be necessary under Linux/MacOS, but is generally required for
-    /// Windows.
-    /// </para>
-    /// <para>
-    /// You can use the Gl.IsExtensionSupported method to check whether any given category of extension functions
-    /// exists in the current OpenGL context. The results can be cached to speed up future searches.
-    /// Keep in mind that different OpenGL contexts may support different extensions, and under different entry
-    /// points. Always check if all required extensions are still supported when changing visuals or pixel
-    /// formats.
-    /// </para>
-    /// <para>
-    /// You may retrieve the entry point for an OpenGL function using the Gl.GetDelegate method.
-    /// </para>
-    /// <para>
-    /// <see href="http://opengl.org/registry/"/>
-    /// <seealso cref="Gl.IsExtensionSupported"/>
-    /// <seealso cref="Gl.GetDelegate"/>
-    /// <seealso cref="Gl.ReloadFunctions"/>
-    /// </para>
+    ///     <para>
+    ///         This class contains all OpenGL enums and functions defined in the 2.1 specification.
+    ///         The official .spec files can be found at: http://opengl.org/registry/.
+    ///     </para>
+    ///     <para>
+    ///         We rely on static initialization to obtain the entry points for OpenGL functions.
+    ///         Please ensure that a valid OpenGL context has been made current in the pertinent thread <b>before</b>
+    ///         any OpenGL functions are called (toolkits like GLUT, SDL or GLFW will automatically take care of
+    ///         the context initialization process). Without a valid OpenGL context, we will only be able
+    ///         to retrieve statically exported entry points (typically corresponding to OpenGL version 1.1 under Windows,
+    ///         1.3 under Linux and 1.4 under Windows Vista), and extension methods will need to be loaded manually.
+    ///     </para>
+    ///     <para>
+    ///         If you prefer to have more control on extension loading, you can use the
+    ///         ReloadFunctions or ReloadFunction methods to manually force the initialisation of OpenGL entry points.
+    ///         The ReloadFunctions method should be called whenever you change an existing visual or pixelformat. This
+    ///         generally happens when you change the color/stencil/depth buffer associated with a window (but probably
+    ///         not the resolution). This may or may not be necessary under Linux/MacOS, but is generally required for
+    ///         Windows.
+    ///     </para>
+    ///     <para>
+    ///         You can use the Gl.IsExtensionSupported method to check whether any given category of extension functions
+    ///         exists in the current OpenGL context. The results can be cached to speed up future searches.
+    ///         Keep in mind that different OpenGL contexts may support different extensions, and under different entry
+    ///         points. Always check if all required extensions are still supported when changing visuals or pixel
+    ///         formats.
+    ///     </para>
+    ///     <para>
+    ///         You may retrieve the entry point for an OpenGL function using the Gl.GetDelegate method.
+    ///     </para>
+    ///     <para>
+    ///         <see href="http://opengl.org/registry/" />
+    ///         <seealso cref="Gl.IsExtensionSupported" />
+    ///         <seealso cref="Gl.GetDelegate" />
+    ///         <seealso cref="Gl.ReloadFunctions" />
+    ///     </para>
     /// </remarks>
     public static partial class Gl
     {
-        #region --- Fields ---
-
-        static StringBuilder sb = new StringBuilder();
-        static object gl_lock = new object();
-
-        internal const string Library = "opengl32.dll";
-
-        //private static Dictionary<string, bool> AvailableExtensions = new Dictionary<string, bool>();
-        private static SortedList<string, bool> AvailableExtensions = new SortedList<string, bool>();
-        private static bool rebuildExtensionList;
-
-        private static Type glClass;
-        private static Type delegatesClass;
-        private static Type importsClass;
-        private static FieldInfo[] delegates;
-
-        #endregion
-
         #region --- Static Constructor ---
 
         static Gl()
         {
-            glClass = typeof(Gl);
-            delegatesClass = glClass.GetNestedType("Delegates", BindingFlags.Static | BindingFlags.NonPublic);
-            importsClass = glClass.GetNestedType("Imports", BindingFlags.Static | BindingFlags.NonPublic);
+            GlClass = typeof (Gl);
+            delegatesClass = GlClass.GetNestedType("Delegates", BindingFlags.Static | BindingFlags.NonPublic);
+            importsClass = GlClass.GetNestedType("Imports", BindingFlags.Static | BindingFlags.NonPublic);
             // 'Touch' Imports class to force initialization. We don't want anything yet, just to have
             // this class ready.
-            if (Imports.FunctionMap != null) { }
+            if (Imports.FunctionMap != null)
+            {
+            }
             ReloadFunctions();
         }
+
+        #endregion
+
+        #region --- Fields ---
+
+        private static readonly StringBuilder sb = new StringBuilder();
+        private static readonly object glLock = new object();
+
+        internal const string Library = "opengl32.dll";
+
+        //private static Dictionary<string, bool> availableExtensions = new Dictionary<string, bool>();
+        private static readonly SortedList<string, bool> availableExtensions = new SortedList<string, bool>();
+        private static bool rebuildExtensionList;
+
+        public static readonly Type GlClass;
+        private static readonly Type delegatesClass;
+        private static readonly Type importsClass;
+        private static FieldInfo[] delegates;
 
         #endregion
 
@@ -121,19 +125,21 @@ namespace Tao.OpenGl
         #region internal static partial class Imports
 
         /// <summary>
-        /// Contains DllImports for the core OpenGL functions.
+        ///     Contains DllImports for the core OpenGL functions.
         /// </summary>
         internal static partial class Imports
         {
             /// <summary>
-            ///  Build a string->MethodInfo map to speed up extension loading.
+            ///     Build a string->MethodInfo map to speed up extension loading.
             /// </summary>
-            internal static SortedList<string, MethodInfo> FunctionMap;  // This is faster than either Dictionary or SortedDictionary
+            internal static SortedList<string, MethodInfo> FunctionMap;
+                // This is faster than either Dictionary or SortedDictionary
+
             static Imports()
             {
-                MethodInfo[] methods = importsClass.GetMethods(BindingFlags.Static | BindingFlags.NonPublic);
+                var methods = importsClass.GetMethods(BindingFlags.Static | BindingFlags.NonPublic);
                 FunctionMap = new SortedList<string, MethodInfo>(methods.Length);
-                foreach (MethodInfo m in methods)
+                foreach (var m in methods)
                     FunctionMap.Add(m.Name, m);
             }
         }
@@ -143,8 +149,8 @@ namespace Tao.OpenGl
         #region public static bool IsExtensionSupported(string name)
 
         /// <summary>
-        /// Determines whether the specified OpenGL extension category is available in
-        /// the current OpenGL context. Equivalent to IsExtensionSupported(name, true)
+        ///     Determines whether the specified OpenGL extension category is available in
+        ///     the current OpenGL context. Equivalent to IsExtensionSupported(name, true)
         /// </summary>
         /// <param name="name">The string for the OpenGL extension category (eg. "GL_ARB_multitexture")</param>
         /// <returns>True if the specified extension is available, false otherwise.</returns>
@@ -153,7 +159,7 @@ namespace Tao.OpenGl
             if (rebuildExtensionList)
                 BuildExtensionList();
 
-            lock (gl_lock)
+            lock (glLock)
             {
                 sb.Remove(0, sb.Length);
                 if (!name.StartsWith("GL_"))
@@ -161,7 +167,7 @@ namespace Tao.OpenGl
                 sb.Append(name.ToLower());
 
                 // Search the cache for the string.
-                return AvailableExtensions.ContainsKey(sb.ToString());
+                return availableExtensions.ContainsKey(sb.ToString());
             }
         }
 
@@ -170,20 +176,21 @@ namespace Tao.OpenGl
         #region public static Delegate GetDelegate(string name, Type signature)
 
         /// <summary>
-        /// Creates a System.Delegate that can be used to call an OpenGL function, core or extension.
+        ///     Creates a System.Delegate that can be used to call an OpenGL function, core or extension.
         /// </summary>
         /// <param name="name">The name of the OpenGL function (eg. "glNewList")</param>
         /// <param name="signature">The signature of the OpenGL function.</param>
         /// <returns>
-        /// A System.Delegate that can be used to call this OpenGL function, or null if the specified
-        /// function name did not correspond to an OpenGL function.
+        ///     A System.Delegate that can be used to call this OpenGL function, or null if the specified
+        ///     function name did not correspond to an OpenGL function.
         /// </returns>
         public static Delegate GetDelegate(string name, Type signature)
         {
             MethodInfo m;
             return GetExtensionDelegate(name, signature) ??
-                  (Imports.FunctionMap.TryGetValue((name.Substring(2)), out m) ?
-                   Delegate.CreateDelegate(signature, m) : null);
+                   (Imports.FunctionMap.TryGetValue(name.Substring(2), out m)
+                       ? Delegate.CreateDelegate(signature, m)
+                       : null);
         }
 
         #endregion
@@ -191,17 +198,17 @@ namespace Tao.OpenGl
         #region public static void ReloadFunctions()
 
         /// <summary>
-        /// Loads all OpenGL functions (core and extensions).
+        ///     Loads all OpenGL functions (core and extensions).
         /// </summary>
         /// <remarks>
-        /// <para>
-        /// This function will be automatically called the first time you use any opengl function. There is 
-        /// </para>
-        /// <para>
-        /// Call this function manually whenever you need to update OpenGL entry points.
-        /// This need may arise if you change the pixelformat/visual, or in case you cannot
-        /// (or do not want) to use the automatic initialization of the GL class.
-        /// </para>
+        ///     <para>
+        ///         This function will be automatically called the first time you use any opengl function. There is
+        ///     </para>
+        ///     <para>
+        ///         Call this function manually whenever you need to update OpenGL entry points.
+        ///         This need may arise if you change the pixelformat/visual, or in case you cannot
+        ///         (or do not want) to use the automatic initialization of the GL class.
+        ///     </para>
         /// </remarks>
         public static void ReloadFunctions()
         {
@@ -212,56 +219,57 @@ namespace Tao.OpenGl
             if (delegates == null)
                 delegates = delegatesClass.GetFields(BindingFlags.Static | BindingFlags.NonPublic);
 
-            foreach (FieldInfo f in delegates)
+            foreach (var f in delegates)
                 f.SetValue(null, GetDelegate(f.Name, f.FieldType));
 
             rebuildExtensionList = true;
         }
 
-        static void set(object d, Delegate value)
-        {
-            d = value;
-        }
+        //static void set(object d, Delegate value)
+        //{
+        //    d = value;
+        //}
 
         #endregion
 
         #region public static bool ReloadFunction(string function)
 
         /// <summary>
-        /// Tries to reload the given OpenGL function (core or extension).
+        ///     Tries to reload the given OpenGL function (core or extension).
         /// </summary>
         /// <param name="function">The name of the OpenGL function (i.e. glShaderSource)</param>
         /// <returns>True if the function was found and reloaded, false otherwise.</returns>
         /// <remarks>
-        /// <para>
-        /// Use this function if you require greater granularity when loading OpenGL entry points.
-        /// </para>
-        /// <para>
-        /// While the automatic initialisation will load all OpenGL entry points, in some cases
-        /// the initialisation can take place before an OpenGL Context has been established.
-        /// In this case, use this function to load the entry points for the OpenGL functions
-        /// you will need, or use ReloadFunctions() to load all available entry points.
-        /// </para>
-        /// <para>
-        /// This function returns true if the given OpenGL function is supported, false otherwise.
-        /// </para>
-        /// <para>
-        /// To query for supported extensions use the IsExtensionSupported() function instead.
-        /// </para>
+        ///     <para>
+        ///         Use this function if you require greater granularity when loading OpenGL entry points.
+        ///     </para>
+        ///     <para>
+        ///         While the automatic initialisation will load all OpenGL entry points, in some cases
+        ///         the initialisation can take place before an OpenGL Context has been established.
+        ///         In this case, use this function to load the entry points for the OpenGL functions
+        ///         you will need, or use ReloadFunctions() to load all available entry points.
+        ///     </para>
+        ///     <para>
+        ///         This function returns true if the given OpenGL function is supported, false otherwise.
+        ///     </para>
+        ///     <para>
+        ///         To query for supported extensions use the IsExtensionSupported() function instead.
+        ///     </para>
         /// </remarks>
         public static bool Load(string function)
         {
-            FieldInfo f = delegatesClass.GetField(function, BindingFlags.Static | BindingFlags.NonPublic);
+            var f = delegatesClass.GetField(function, BindingFlags.Static | BindingFlags.NonPublic);
             if (f == null)
                 return false;
 
-            Delegate old = f.GetValue(null) as Delegate;
-            Delegate @new = GetDelegate(f.Name, f.FieldType);
-            if (old.Target != @new.Target)
+            var old = f.GetValue(null) as Delegate;
+            var @new = GetDelegate(f.Name, f.FieldType);
+            if (old?.Target != @new.Target)
             {
                 f.SetValue(null, @new);
                 rebuildExtensionList = true;
             }
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             return @new != null;
         }
 
@@ -270,14 +278,14 @@ namespace Tao.OpenGl
         #region private static void BuildExtensionList()
 
         /// <summary>
-        /// Builds a cache of all supported extensions.
+        ///     Builds a cache of all supported extensions.
         /// </summary>
         private static void BuildExtensionList()
         {
             // Assumes there is an opengl context current.
-            AvailableExtensions.Clear();
-            string version_string = Gl.glGetString(Gl.GL_VERSION);
-            if (String.IsNullOrEmpty(version_string))
+            availableExtensions.Clear();
+            var versionString = glGetString(GL_VERSION);
+            if (string.IsNullOrEmpty(versionString))
                 throw new ApplicationException("Failed to retrieve OpenGL version. Is there an opengl context current?");
 
             string version;
@@ -288,71 +296,68 @@ namespace Tao.OpenGl
             // We'll do some trickery to get the second version number (2.1), but this may break on
             // some implementations...
             // This works on Ati, Mesa, Nvidia, but I'd like someone to test on Intel, too.
-            if (version_string.ToLower().Contains("mesa"))
+            if (versionString.ToLower().Contains("mesa"))
             {
-                int index = version_string.IndexOf('(');
-                if (index != -1)
-                    version = version_string.Substring(index + 1, 3);
-                else
-                    version = version_string.TrimStart(' ');
+                var index = versionString.IndexOf('(');
+                version = index != -1 ? versionString.Substring(index + 1, 3) : versionString.TrimStart(' ');
             }
             else
-                version = version_string.TrimStart(' ');
+                version = versionString.TrimStart(' ');
 
             // Ugh, this look ugly.
             if (version.StartsWith("1.2"))
             {
-                AvailableExtensions.Add("gl_version_1_1", true);
-                AvailableExtensions.Add("gl_version_1_2", true);
+                availableExtensions.Add("gl_version_1_1", true);
+                availableExtensions.Add("gl_version_1_2", true);
             }
             else if (version.StartsWith("1.3"))
             {
-                AvailableExtensions.Add("gl_version_1_1", true);
-                AvailableExtensions.Add("gl_version_1_2", true);
-                AvailableExtensions.Add("gl_version_1_3", true);
+                availableExtensions.Add("gl_version_1_1", true);
+                availableExtensions.Add("gl_version_1_2", true);
+                availableExtensions.Add("gl_version_1_3", true);
             }
             else if (version.StartsWith("1.4"))
             {
-                AvailableExtensions.Add("gl_version_1_1", true);
-                AvailableExtensions.Add("gl_version_1_2", true);
-                AvailableExtensions.Add("gl_version_1_3", true);
-                AvailableExtensions.Add("gl_version_1_4", true);
+                availableExtensions.Add("gl_version_1_1", true);
+                availableExtensions.Add("gl_version_1_2", true);
+                availableExtensions.Add("gl_version_1_3", true);
+                availableExtensions.Add("gl_version_1_4", true);
             }
             else if (version.StartsWith("1.5"))
             {
-                AvailableExtensions.Add("gl_version_1_1", true);
-                AvailableExtensions.Add("gl_version_1_2", true);
-                AvailableExtensions.Add("gl_version_1_3", true);
-                AvailableExtensions.Add("gl_version_1_4", true);
-                AvailableExtensions.Add("gl_version_1_5", true);
+                availableExtensions.Add("gl_version_1_1", true);
+                availableExtensions.Add("gl_version_1_2", true);
+                availableExtensions.Add("gl_version_1_3", true);
+                availableExtensions.Add("gl_version_1_4", true);
+                availableExtensions.Add("gl_version_1_5", true);
             }
             else if (version.StartsWith("2.0"))
             {
-                AvailableExtensions.Add("gl_version_1_1", true);
-                AvailableExtensions.Add("gl_version_1_2", true);
-                AvailableExtensions.Add("gl_version_1_3", true);
-                AvailableExtensions.Add("gl_version_1_4", true);
-                AvailableExtensions.Add("gl_version_1_5", true);
-                AvailableExtensions.Add("gl_version_2_0", true);
+                availableExtensions.Add("gl_version_1_1", true);
+                availableExtensions.Add("gl_version_1_2", true);
+                availableExtensions.Add("gl_version_1_3", true);
+                availableExtensions.Add("gl_version_1_4", true);
+                availableExtensions.Add("gl_version_1_5", true);
+                availableExtensions.Add("gl_version_2_0", true);
             }
             else if (version.StartsWith("2.1"))
             {
-                AvailableExtensions.Add("gl_version_1_1", true);
-                AvailableExtensions.Add("gl_version_1_2", true);
-                AvailableExtensions.Add("gl_version_1_3", true);
-                AvailableExtensions.Add("gl_version_1_4", true);
-                AvailableExtensions.Add("gl_version_1_5", true);
-                AvailableExtensions.Add("gl_version_2_0", true);
-                AvailableExtensions.Add("gl_version_2_1", true);
+                availableExtensions.Add("gl_version_1_1", true);
+                availableExtensions.Add("gl_version_1_2", true);
+                availableExtensions.Add("gl_version_1_3", true);
+                availableExtensions.Add("gl_version_1_4", true);
+                availableExtensions.Add("gl_version_1_5", true);
+                availableExtensions.Add("gl_version_2_0", true);
+                availableExtensions.Add("gl_version_2_1", true);
             }
 
-            string extension_string = Gl.glGetString(Gl.GL_EXTENSIONS);
-            if (String.IsNullOrEmpty(extension_string))
-                return;               // no extensions are available
+            var extensionString = glGetString(GL_EXTENSIONS);
+            if (string.IsNullOrEmpty(extensionString))
+                return; // no extensions are available
 
-            string[] extensions = extension_string.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (string ext in extensions)
-                AvailableExtensions.Add(ext.ToLower(), true);
+            var extensions = extensionString.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var ext in extensions)
+                availableExtensions.Add(ext.ToLower(), true);
 
             rebuildExtensionList = false;
         }
@@ -372,85 +377,87 @@ namespace Tao.OpenGl
 
         internal class GetProcAddressWindows : IGetProcAddress
         {
-            [System.Runtime.InteropServices.DllImport(Library, EntryPoint = "wglGetProcAddress", ExactSpelling = true)]
-            private static extern IntPtr wglGetProcAddress(String lpszProc);
-
             public IntPtr GetProcAddress(string function)
             {
                 return wglGetProcAddress(function);
             }
+
+            [DllImport(Library, EntryPoint = "wglGetProcAddress", ExactSpelling = true)]
+            private static extern IntPtr wglGetProcAddress(string lpszProc);
         }
 
         internal class GetProcAddressX11 : IGetProcAddress
         {
-            [DllImport(Library, EntryPoint = "glXGetProcAddress")]
-            private static extern IntPtr glxGetProcAddress([MarshalAs(UnmanagedType.LPTStr)] string procName);
-
             public IntPtr GetProcAddress(string function)
             {
                 return glxGetProcAddress(function);
             }
+
+            [DllImport(Library, EntryPoint = "glXGetProcAddress")]
+            private static extern IntPtr glxGetProcAddress([MarshalAs(UnmanagedType.LPTStr)] string procName);
         }
 
         internal class GetProcAddressOSX : IGetProcAddress
         {
-            private const string Library = "libdl.dylib";
-
-            [DllImport(Library, EntryPoint = "NSIsSymbolNameDefined")]
-            private static extern bool NSIsSymbolNameDefined(string s);
-            [DllImport(Library, EntryPoint = "NSLookupAndBindSymbol")]
-            private static extern IntPtr NSLookupAndBindSymbol(string s);
-            [DllImport(Library, EntryPoint = "NSAddressOfSymbol")]
-            private static extern IntPtr NSAddressOfSymbol(IntPtr symbol);
+            private const string LIBRARY = "libdl.dylib";
 
             public IntPtr GetProcAddress(string function)
             {
-                string fname = "_" + function;
+                var fname = "_" + function;
                 if (!NSIsSymbolNameDefined(fname))
                     return IntPtr.Zero;
 
-                IntPtr symbol = NSLookupAndBindSymbol(fname);
+                var symbol = NSLookupAndBindSymbol(fname);
                 if (symbol != IntPtr.Zero)
                     symbol = NSAddressOfSymbol(symbol);
 
                 return symbol;
             }
+
+            [DllImport(LIBRARY, EntryPoint = "NSIsSymbolNameDefined")]
+            private static extern bool NSIsSymbolNameDefined(string s);
+
+            [DllImport(LIBRARY, EntryPoint = "NSLookupAndBindSymbol")]
+            private static extern IntPtr NSLookupAndBindSymbol(string s);
+
+            [DllImport(LIBRARY, EntryPoint = "NSAddressOfSymbol")]
+            private static extern IntPtr NSAddressOfSymbol(IntPtr symbol);
         }
 
         #region private static IntPtr GetAddress(string function)
 
         /// <summary>
-        /// Retrieves the entry point for a dynamically exported OpenGL function.
+        ///     Retrieves the entry point for a dynamically exported OpenGL function.
         /// </summary>
         /// <param name="function">The function string for the OpenGL function (eg. "glNewList")</param>
         /// <returns>
-        /// An IntPtr contaning the address for the entry point, or IntPtr.Zero if the specified
-        /// OpenGL function is not dynamically exported.
+        ///     An IntPtr contaning the address for the entry point, or IntPtr.Zero if the specified
+        ///     OpenGL function is not dynamically exported.
         /// </returns>
         /// <remarks>
-        /// <para>
-        /// The Marshal.GetDelegateForFunctionPointer method can be used to turn the return value
-        /// into a call-able delegate.
-        /// </para>
-        /// <para>
-        /// This function is cross-platform. It determines the underlying platform and uses the
-        /// correct wgl, glx or agl GetAddress function to retrieve the function pointer.
-        /// </para>
-        /// <see cref="Marshal.GetDelegateForFunctionPointer"/>
+        ///     <para>
+        ///         The Marshal.GetDelegateForFunctionPointer method can be used to turn the return value
+        ///         into a call-able delegate.
+        ///     </para>
+        ///     <para>
+        ///         This function is cross-platform. It determines the underlying platform and uses the
+        ///         correct wgl, glx or agl GetAddress function to retrieve the function pointer.
+        ///     </para>
+        ///     <see cref="Marshal.GetDelegateForFunctionPointer" />
         /// </remarks>
         private static IntPtr GetAddress(string function)
         {
             if (getProcAddress == null)
             {
-                if (System.Environment.OSVersion.Platform == PlatformID.Win32NT ||
-                    System.Environment.OSVersion.Platform == PlatformID.Win32S ||
-                    System.Environment.OSVersion.Platform == PlatformID.Win32Windows ||
-                    System.Environment.OSVersion.Platform == PlatformID.WinCE)
+                if (Environment.OSVersion.Platform == PlatformID.Win32NT ||
+                    Environment.OSVersion.Platform == PlatformID.Win32S ||
+                    Environment.OSVersion.Platform == PlatformID.Win32Windows ||
+                    Environment.OSVersion.Platform == PlatformID.WinCE)
                 {
                     getProcAddress = new GetProcAddressWindows();
                 }
-                else if (System.Environment.OSVersion.Platform == PlatformID.Unix ||
-                         System.Environment.OSVersion.Platform == (PlatformID)4)
+                else if (Environment.OSVersion.Platform == PlatformID.Unix ||
+                         Environment.OSVersion.Platform == (PlatformID) 4)
                 {
                     // Distinguish between Unix and Mac OS X kernels.
                     switch (DetectUnixKernel())
@@ -466,7 +473,8 @@ namespace Tao.OpenGl
 
                         default:
                             throw new PlatformNotSupportedException(
-                                DetectUnixKernel() + ": Unknown Unix platform - cannot load extensions. Please report a bug at http://taoframework.com");
+                                DetectUnixKernel() +
+                                ": Unknown Unix platform - cannot load extensions. Please report a bug at http://taoframework.com");
                     }
                 }
                 else
@@ -484,35 +492,36 @@ namespace Tao.OpenGl
         #region private static string DetectUnixKernel()
 
         /// <summary>
-        /// Executes "uname" which returns a string representing the name of the
-        /// underlying Unix kernel.
+        ///     Executes "uname" which returns a string representing the name of the
+        ///     underlying Unix kernel.
         /// </summary>
         /// <returns>"Unix", "Linux", "Darwin" or null.</returns>
         /// <remarks>Source code from "Mono: A Developer's Notebook"</remarks>
         private static string DetectUnixKernel()
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.Arguments = "-s";
-            startInfo.RedirectStandardOutput = true;
-            startInfo.RedirectStandardError = true;
-            startInfo.UseShellExecute = false;
-            foreach (string unameprog in new string[] { "/usr/bin/uname", "/bin/uname", "uname" })
+            var startInfo = new ProcessStartInfo
+            {
+                Arguments = "-s",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false
+            };
+            foreach (var unameprog in new[] {"/usr/bin/uname", "/bin/uname", "uname"})
             {
                 try
                 {
                     startInfo.FileName = unameprog;
-                    Process uname = Process.Start(startInfo);
-                    StreamReader stdout = uname.StandardOutput;
-                    return stdout.ReadLine().Trim();
+                    var uname = Process.Start(startInfo);
+                    var stdout = uname?.StandardOutput;
+                    var readLine = stdout?.ReadLine();
+                    if (readLine != null) return readLine.Trim();
                 }
-                catch (System.IO.FileNotFoundException)
+                catch (FileNotFoundException)
                 {
                     // The requested executable doesn't exist, try next one.
-                    continue;
                 }
-                catch (System.ComponentModel.Win32Exception)
+                catch (Win32Exception)
                 {
-                    continue;
                 }
             }
             return null;
@@ -523,28 +532,25 @@ namespace Tao.OpenGl
         #region internal static Delegate GetExtensionDelegate(string name, Type signature)
 
         /// <summary>
-        /// Creates a System.Delegate that can be used to call a dynamically exported OpenGL function.
+        ///     Creates a System.Delegate that can be used to call a dynamically exported OpenGL function.
         /// </summary>
         /// <param name="name">The name of the OpenGL function (eg. "glNewList")</param>
         /// <param name="signature">The signature of the OpenGL function.</param>
         /// <returns>
-        /// A System.Delegate that can be used to call this OpenGL function or null
-        /// if the function is not available in the current OpenGL context.
+        ///     A System.Delegate that can be used to call this OpenGL function or null
+        ///     if the function is not available in the current OpenGL context.
         /// </returns>
         internal static Delegate GetExtensionDelegate(string name, Type signature)
         {
-            IntPtr address = GetAddress(name);
+            var address = GetAddress(name);
 
             if (address == IntPtr.Zero ||
-                address == new IntPtr(1) ||     // Workaround for buggy nvidia drivers which return
-                address == new IntPtr(2))       // 1 or 2 instead of IntPtr.Zero for some extensions.
+                address == new IntPtr(1) || // Workaround for buggy nvidia drivers which return
+                address == new IntPtr(2)) // 1 or 2 instead of IntPtr.Zero for some extensions.
             {
                 return null;
             }
-            else
-            {
-                return Marshal.GetDelegateForFunctionPointer(address, signature);
-            }
+            return Marshal.GetDelegateForFunctionPointer(address, signature);
         }
 
         #endregion
