@@ -1,4 +1,5 @@
 #region License
+
 /*
 
 MIT License
@@ -24,16 +25,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+
 #endregion License
 
 using System;
 using System.Collections;
-using System.Runtime.InteropServices;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace Tao.OpenGl
 {
-
     //
     // This attribute is used to decorate OpenGL extension entry points.
     // It specifies both the extension name (full name, with GL_ prefix)
@@ -43,30 +44,27 @@ namespace Tao.OpenGl
     // postprocessing to tie a particular method with a particular extension.
     //
     /// <summary>
-    /// 
     /// </summary>
     [Obsolete("This attribute is obsolete. Extension loading is now handled by the Tao.OpenGl.Gl class")]
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Method)]
-    public class OpenGLExtensionImport : Attribute
+    public class OPEN_GL_EXTENSION_IMPORT : Attribute
     {
         /// <summary>
-        /// 
-        /// </summary>
-        public string ExtensionName;
-        /// <summary>
-        /// 
         /// </summary>
         public string EntryPoint;
 
         /// <summary>
-        /// 
         /// </summary>
-        /// <param name="ExtensionName"></param>
-        /// <param name="EntryPoint"></param>
-        public OpenGLExtensionImport(string ExtensionName, string EntryPoint)
+        public string ExtensionName;
+
+        /// <summary>
+        /// </summary>
+        /// <param name="extensionName"></param>
+        /// <param name="entryPoint"></param>
+        public OPEN_GL_EXTENSION_IMPORT(string extensionName, string entryPoint)
         {
-            this.ExtensionName = ExtensionName;
-            this.EntryPoint = EntryPoint;
+            ExtensionName = extensionName;
+            EntryPoint = entryPoint;
         }
     }
 
@@ -75,90 +73,46 @@ namespace Tao.OpenGl
     // is responsible for loading extensions.
     //
     /// <summary>
-    /// 
     /// </summary>
     [Obsolete("This class is obsolete. Extension loading is now handled by the Tao.OpenGl.Gl class")]
     public class GlExtensionLoader
     {
-        //
-        // Data for a particular context; available extensions,
-        // already-loaded extensions, etc.
-        //
-
-        internal class GlContextInfo
-        {
-            public Hashtable AvailableExtensions;
-            public Hashtable LoadedExtensions;
-
-            public GlContextInfo()
-            {
-                AvailableExtensions = new Hashtable();
-                LoadedExtensions = new Hashtable();
-
-                ParseAvailableExtensions();
-            }
-
-            public void ParseAvailableExtensions()
-            {
-                // assumes that the context is already made current
-                IntPtr extstrptr = glGetString(0x00001f03); // GL_EXTENSIONS
-                if (extstrptr == IntPtr.Zero)
-                    return;               // no extensions are available
-
-                string extstr = Marshal.PtrToStringAnsi(extstrptr);
-
-                string[] exts = extstr.Split(' ');
-                foreach (string ext in exts)
-                {
-                    AvailableExtensions[ext] = true;
-                }
-
-                IntPtr verstrptr = glGetString(0x1F02); // GL_VERSION
-                if (verstrptr == IntPtr.Zero)
-                    return;               // this shoudn't happen
-
-                string verstr = Marshal.PtrToStringAnsi(verstrptr).Trim(new char[] { ' ' });
-
-                if (verstr.StartsWith("1.2"))
-                {
-                    AvailableExtensions["GL_VERSION_1_2"] = true;
-                }
-                else if (verstr.StartsWith("1.3"))
-                {
-                    AvailableExtensions["GL_VERSION_1_2"] = true;
-                    AvailableExtensions["GL_VERSION_1_3"] = true;
-                }
-                else if (verstr.StartsWith("1.4"))
-                {
-                    AvailableExtensions["GL_VERSION_1_2"] = true;
-                    AvailableExtensions["GL_VERSION_1_3"] = true;
-                    AvailableExtensions["GL_VERSION_1_4"] = true;
-                }
-                else if (verstr.StartsWith("1.5"))
-                {
-                    AvailableExtensions["GL_VERSION_1_2"] = true;
-                    AvailableExtensions["GL_VERSION_1_3"] = true;
-                    AvailableExtensions["GL_VERSION_1_4"] = true;
-                    AvailableExtensions["GL_VERSION_1_5"] = true;
-                }
-                else if (verstr.StartsWith("2"))
-                {
-                    AvailableExtensions["GL_VERSION_1_2"] = true;
-                    AvailableExtensions["GL_VERSION_1_3"] = true;
-                    AvailableExtensions["GL_VERSION_1_4"] = true;
-                    AvailableExtensions["GL_VERSION_1_5"] = true;
-                    AvailableExtensions["GL_VERSION_2_0"] = true;
-                }
-            }
-        }
-
         // key -> GlContextInfo
         // 0 is special key for the static context
-        private static Hashtable ContextInfo;
+        private static readonly Hashtable ContextInfo;
+
+        private static GetProcAddressPlatform gpaPlatform = GetProcAddressPlatform.Unknown;
+
+        //
+        // Find the Tao.OpenGl.Gl type
+        //
+        private static Type mStaticGlType;
 
         static GlExtensionLoader()
         {
             ContextInfo = new Hashtable();
+        }
+
+        private GlExtensionLoader()
+        {
+        }
+
+        private static Type StaticGlType
+        {
+            get
+            {
+                if (mStaticGlType != null)
+                    return mStaticGlType;
+
+                foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    mStaticGlType = asm.GetType("Tao.OpenGl.Gl");
+                    if (mStaticGlType != null)
+                        return mStaticGlType;
+                }
+
+                throw new InvalidProgramException("Can't find Tao.OpenGl.Gl type in any loaded assembly!");
+            }
         }
 
         // we can't depend on any symbols from Tao.OpenGl.Gl
@@ -178,8 +132,10 @@ namespace Tao.OpenGl
         // osx gets complicated
         [DllImport("libdl.dylib", EntryPoint = "NSIsSymbolNameDefined")]
         internal static extern bool NSIsSymbolNameDefined(string s);
+
         [DllImport("libdl.dylib", EntryPoint = "NSLookupAndBindSymbol")]
         internal static extern IntPtr NSLookupAndBindSymbol(string s);
+
         [DllImport("libdl.dylib", EntryPoint = "NSAddressOfSymbol")]
         internal static extern IntPtr NSAddressOfSymbol(IntPtr symbol);
 
@@ -188,13 +144,13 @@ namespace Tao.OpenGl
         [DllImport("opengl32.dll")]
         internal static extern IntPtr glGetString(uint name);
 
-        internal static IntPtr aglGetProcAddress(string s)
+        internal static IntPtr AglGetProcAddress(string s)
         {
-            string fname = "_" + s;
+            var fname = "_" + s;
             if (!NSIsSymbolNameDefined(fname))
                 return IntPtr.Zero;
 
-            IntPtr symbol = NSLookupAndBindSymbol(fname);
+            var symbol = NSLookupAndBindSymbol(fname);
             if (symbol != IntPtr.Zero)
                 symbol = NSAddressOfSymbol(symbol);
 
@@ -215,22 +171,7 @@ namespace Tao.OpenGl
             return ContextInfo[ctx] as GlContextInfo;
         }
 
-        //
-        // the public entry point for a cross-platform GetProcAddress
-        //
-        enum GetProcAddressPlatform
-        {
-            Unknown,
-            Windows,
-            X11,
-            X11_ARB,
-            OSX
-        };
-
-        static GetProcAddressPlatform gpaPlatform = GetProcAddressPlatform.Unknown;
-
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
@@ -238,7 +179,7 @@ namespace Tao.OpenGl
         {
             if (gpaPlatform == GetProcAddressPlatform.Unknown)
             {
-                IntPtr result = IntPtr.Zero;
+                IntPtr result;
 
                 // WGL?
                 try
@@ -249,17 +190,19 @@ namespace Tao.OpenGl
                 }
                 catch (Exception)
                 {
+                    // ignored
                 }
 
                 // AGL? (before X11, since GLX might exist on OSX)
                 try
                 {
-                    result = aglGetProcAddress(s);
+                    result = AglGetProcAddress(s);
                     gpaPlatform = GetProcAddressPlatform.OSX;
                     return result;
                 }
                 catch (Exception)
                 {
+                    // ignored
                 }
 
                 // X11?
@@ -271,6 +214,7 @@ namespace Tao.OpenGl
                 }
                 catch (Exception)
                 {
+                    // ignored
                 }
 
                 // X11 ARB?
@@ -282,24 +226,25 @@ namespace Tao.OpenGl
                 }
                 catch (Exception)
                 {
+                    // ignored
                 }
 
                 // Ack!
                 throw new NotSupportedException("Can't figure out how to call GetProcAddress on this platform!");
             }
-            else if (gpaPlatform == GetProcAddressPlatform.Windows)
+            if (gpaPlatform == GetProcAddressPlatform.Windows)
             {
                 return wglGetProcAddress(s);
             }
-            else if (gpaPlatform == GetProcAddressPlatform.OSX)
+            if (gpaPlatform == GetProcAddressPlatform.OSX)
             {
-                return aglGetProcAddress(s);
+                return AglGetProcAddress(s);
             }
-            else if (gpaPlatform == GetProcAddressPlatform.X11)
+            if (gpaPlatform == GetProcAddressPlatform.X11)
             {
                 return glxGetProcAddress(s);
             }
-            else if (gpaPlatform == GetProcAddressPlatform.X11_ARB)
+            if (gpaPlatform == GetProcAddressPlatform.X11_ARB)
             {
                 return glxGetProcAddressARB(s);
             }
@@ -307,13 +252,9 @@ namespace Tao.OpenGl
             throw new NotSupportedException("Shouldn't get here..");
         }
 
-        private GlExtensionLoader()
-        {
-        }
-
         /// <summary>
-        /// Returns trueif the extension with the given name is supported
-        /// in the global static context.
+        ///     Returns trueif the extension with the given name is supported
+        ///     in the global static context.
         /// </summary>
         /// <param name="extname">The extension name.</param>
         /// <returns></returns>
@@ -323,23 +264,23 @@ namespace Tao.OpenGl
         }
 
         /// <summary>
-        /// Returns true if the extension with the given name is supported
-        /// in the given context.
+        ///     Returns true if the extension with the given name is supported
+        ///     in the given context.
         /// </summary>
         /// <param name="contextGl">The context which to query.</param>
         /// <param name="extname">The extension name.</param>
         /// <returns></returns>
         public static bool IsExtensionSupported(object contextGl, string extname)
         {
-            GlContextInfo gci = GetContextInfo(contextGl);
+            var gci = GetContextInfo(contextGl);
             if (gci.AvailableExtensions.ContainsKey(extname))
                 return true;
             return false;
         }
 
         /// <summary>
-        /// Attempt to load the extension with the specified name into the
-        /// global static context.  Returns true on success.
+        ///     Attempt to load the extension with the specified name into the
+        ///     global static context.  Returns true on success.
         /// </summary>
         /// <param name="extname">The extension name.</param>
         /// <returns></returns>
@@ -357,7 +298,6 @@ namespace Tao.OpenGl
         // Tao.OpenGl.ContextGl, or null.
         //
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="contextGl"></param>
         /// <param name="extname"></param>
@@ -378,7 +318,6 @@ namespace Tao.OpenGl
         // extension is not supported.
         //
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="contextGl"></param>
         /// <param name="extname"></param>
@@ -386,10 +325,10 @@ namespace Tao.OpenGl
         /// <returns></returns>
         public static bool LoadExtension(object contextGl, string extname, bool forceLoad)
         {
-            GlContextInfo gci = GetContextInfo(contextGl);
+            var gci = GetContextInfo(contextGl);
             if (gci.LoadedExtensions.ContainsKey(extname))
             {
-                return (bool)gci.LoadedExtensions[extname];
+                return (bool) gci.LoadedExtensions[extname];
             }
 
             if (!forceLoad && !gci.AvailableExtensions.ContainsKey(extname))
@@ -413,39 +352,41 @@ namespace Tao.OpenGl
                 }
             }
 
-            FieldInfo[] fis = glt.GetFields(BindingFlags.Public |
-                                              BindingFlags.DeclaredOnly |
-                                              BindingFlags.Static |
-                                              BindingFlags.Instance);
+            var fis = glt?.GetFields(BindingFlags.Public |
+                                     BindingFlags.DeclaredOnly |
+                                     BindingFlags.Static |
+                                     BindingFlags.Instance);
 
-            foreach (FieldInfo fi in fis)
-            {
-                object[] attrs = fi.GetCustomAttributes(typeof(OpenGLExtensionImport), false);
-                if (attrs.Length == 0)
-                    continue;
-
-                OpenGLExtensionImport oglext = attrs[0] as OpenGLExtensionImport;
-                if (oglext.ExtensionName == extname)
+            if (fis != null)
+                foreach (var fi in fis)
                 {
-                    // did we already load this somehow?
-                    if (((IntPtr)fi.GetValue(contextGl)) != IntPtr.Zero)
+                    var attrs = fi.GetCustomAttributes(typeof (OPEN_GL_EXTENSION_IMPORT), false);
+                    if (attrs.Length == 0)
                         continue;
 
-                    //Console.WriteLine ("Loading " + oglext.EntryPoint + " for " + extname);
-                    IntPtr procaddr = GetProcAddress(oglext.EntryPoint);
-                    if (procaddr == IntPtr.Zero)
+                    var oglext = attrs[0] as OPEN_GL_EXTENSION_IMPORT;
+                    if (oglext?.ExtensionName == extname)
                     {
-                        Console.WriteLine("OpenGL claimed that '{0}' was supported, but couldn't find '{1}' entry point",
-                                           extname, oglext.EntryPoint);
-                        // we crash if anyone tries to call this method, but that's ok
-                        continue;
+                        // did we already load this somehow?
+                        if ((IntPtr) fi.GetValue(contextGl) != IntPtr.Zero)
+                            continue;
+
+                        //Console.WriteLine ("Loading " + oglext.entryPoint + " for " + extname);
+                        var procaddr = GetProcAddress(oglext?.EntryPoint);
+                        if (procaddr == IntPtr.Zero)
+                        {
+                            Console.WriteLine(
+                                "OpenGL claimed that '{0}' was supported, but couldn't find '{1}' entry point",
+                                extname, oglext?.EntryPoint);
+                            // we crash if anyone tries to call this method, but that's ok
+                            continue;
+                        }
+
+                        fi.SetValue(contextGl, procaddr);
                     }
-
-                    fi.SetValue(contextGl, procaddr);
                 }
-            }
 
-            gci.LoadedExtensions[extname] = true;
+            if (extname != null) gci.LoadedExtensions[extname] = true;
             return true;
         }
 
@@ -454,7 +395,6 @@ namespace Tao.OpenGl
         //
 
         /// <summary>
-        /// 
         /// </summary>
         public static void LoadAllExtensions()
         {
@@ -462,37 +402,105 @@ namespace Tao.OpenGl
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="contextGl"></param>
         public static void LoadAllExtensions(object contextGl)
         {
-            GlContextInfo gci = GetContextInfo(contextGl);
+            var gci = GetContextInfo(contextGl);
 
             foreach (string ext in gci.AvailableExtensions.Keys)
                 LoadExtension(contextGl, ext, false);
         }
 
         //
-        // Find the Tao.OpenGl.Gl type
+        // Data for a particular context; available extensions,
+        // already-loaded extensions, etc.
         //
-        static Type mStaticGlType;
-        static Type StaticGlType
-        {
-            get
-            {
-                if (mStaticGlType != null)
-                    return mStaticGlType;
 
-                foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
+        internal class GlContextInfo
+        {
+            public Hashtable AvailableExtensions;
+            public Hashtable LoadedExtensions;
+
+            public GlContextInfo()
+            {
+                AvailableExtensions = new Hashtable();
+                LoadedExtensions = new Hashtable();
+
+                ParseAvailableExtensions();
+            }
+
+            public void ParseAvailableExtensions()
+            {
+                // assumes that the context is already made current
+                var extstrptr = glGetString(0x00001f03); // GL_EXTENSIONS
+                if (extstrptr == IntPtr.Zero)
+                    return; // no extensions are available
+
+                var extstr = Marshal.PtrToStringAnsi(extstrptr);
+
+                if (extstr != null)
                 {
-                    mStaticGlType = asm.GetType("Tao.OpenGl.Gl");
-                    if (mStaticGlType != null)
-                        return mStaticGlType;
+                    var exts = extstr.Split(' ');
+                    foreach (var ext in exts)
+                    {
+                        AvailableExtensions[ext] = true;
+                    }
                 }
 
-                throw new InvalidProgramException("Can't find Tao.OpenGl.Gl type in any loaded assembly!");
+                var verstrptr = glGetString(0x1F02); // GL_VERSION
+                if (verstrptr == IntPtr.Zero)
+                    return; // this shoudn't happen
+
+                var ptrToStringAnsi = Marshal.PtrToStringAnsi(verstrptr);
+                if (ptrToStringAnsi != null)
+                {
+                    var verstr = ptrToStringAnsi.Trim(' ');
+
+                    if (verstr.StartsWith("1.2"))
+                    {
+                        AvailableExtensions["GL_VERSION_1_2"] = true;
+                    }
+                    else if (verstr.StartsWith("1.3"))
+                    {
+                        AvailableExtensions["GL_VERSION_1_2"] = true;
+                        AvailableExtensions["GL_VERSION_1_3"] = true;
+                    }
+                    else if (verstr.StartsWith("1.4"))
+                    {
+                        AvailableExtensions["GL_VERSION_1_2"] = true;
+                        AvailableExtensions["GL_VERSION_1_3"] = true;
+                        AvailableExtensions["GL_VERSION_1_4"] = true;
+                    }
+                    else if (verstr.StartsWith("1.5"))
+                    {
+                        AvailableExtensions["GL_VERSION_1_2"] = true;
+                        AvailableExtensions["GL_VERSION_1_3"] = true;
+                        AvailableExtensions["GL_VERSION_1_4"] = true;
+                        AvailableExtensions["GL_VERSION_1_5"] = true;
+                    }
+                    else if (verstr.StartsWith("2"))
+                    {
+                        AvailableExtensions["GL_VERSION_1_2"] = true;
+                        AvailableExtensions["GL_VERSION_1_3"] = true;
+                        AvailableExtensions["GL_VERSION_1_4"] = true;
+                        AvailableExtensions["GL_VERSION_1_5"] = true;
+                        AvailableExtensions["GL_VERSION_2_0"] = true;
+                    }
+                }
             }
+        }
+
+        //
+        // the public entry point for a cross-platform GetProcAddress
+        //
+        private enum GetProcAddressPlatform
+        {
+            Unknown,
+            Windows,
+            X11,
+            X11_ARB,
+            OSX
         }
     }
 }
