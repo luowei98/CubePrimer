@@ -2,7 +2,8 @@ using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
-namespace Tao.OpenGl {
+namespace RobertLw.OpenGL.Base
+{
     #region Class Documentation
     /// <summary>
     ///     GLU (OpenGL Utility) binding for .NET, implementing GLU 1.3.
