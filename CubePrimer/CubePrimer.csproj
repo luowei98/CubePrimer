@@ -147,16 +147,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Lib\Tao.OpenGl\Tao.OpenGl.csproj">
-      <Project>{6292109B-6BB4-4120-AD56-F409C0285AB6}</Project>
-      <Name>Tao.OpenGl</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Lib\Tao.Platform.Windows\Tao.Platform.Windows.csproj">
-      <Project>{228201EB-1A36-4E25-B59F-52255CBBE270}</Project>
-      <Name>Tao.Platform.Windows</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\face.bmp" />
   </ItemGroup>
   <ItemGroup>
@@ -182,6 +172,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\cube.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Lib\RobertLw.OpenGL\OpenGL.csproj">
+      <Project>{74f04db6-6117-480e-95a3-6493b23b8870}</Project>
+      <Name>OpenGL</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

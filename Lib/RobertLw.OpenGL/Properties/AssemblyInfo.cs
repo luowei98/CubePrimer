@@ -44,3 +44,5 @@ using System.Security;
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyName("")]
 [assembly: CLSCompliant(true)]
+
+[assembly: SecurityRules(SecurityRuleSet.Level1)]

@@ -2,8 +2,8 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
-using Tao.OpenGl;
-using Tao.Platform.Windows;
+using RobertLw.OpenGL.Base;
+using RobertLw.OpenGL.Windows;
 
 
 namespace CubePrimer
