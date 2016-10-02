@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Runtime.Serialization;
 using System.Windows.Forms;
 using System.Collections;
 
-namespace CubePrimer
+namespace RobertLw.Interest.CubePrimer.Data
 {
     [Serializable()]
     public class Shortcut : ISerializable
@@ -66,7 +65,7 @@ namespace CubePrimer
             Alt = alt;
             Ctrl = ctrl;
             Shift = shift;
-            IsMenu = false;
+            IsMenu = ismenu;
         }
 
         public Shortcut(SerializationInfo info, StreamingContext ctxt)
@@ -108,7 +107,7 @@ namespace CubePrimer
     public class ShortcutsSaver : ISerializable, IEnumerable
     {
         #region private fields
-        private List<Shortcut> items;
+        private readonly List<Shortcut> items;
 
         #endregion
 
@@ -205,10 +204,10 @@ namespace CubePrimer
 
         public void Add(Shortcut item)
         {
-            if (this.ContainsKey(item.Key, item.Alt, item.Ctrl, item.Shift))
+            if (ContainsKey(item.Key, item.Alt, item.Ctrl, item.Shift))
                 throw new ArgumentException("已添加了具有相同键的项。");
 
-            if (this.ContainsText(item.Text))
+            if (ContainsText(item.Text))
                 this[item.Text] = item;
             else
                 items.Add(item);
@@ -219,11 +218,11 @@ namespace CubePrimer
                         Keys key = Keys.None, bool alt = false, bool ctrl = false, bool shift = false,
                         bool ismenu = false)
         {
-            if (this.ContainsKey(key, alt, ctrl, shift))
+            if (ContainsKey(key, alt, ctrl, shift))
                 throw new ArgumentException("已添加了具有相同键的项。");
 
             Shortcut stc = new Shortcut(text, obj, method, key, alt, ctrl, shift, ismenu);
-            if (this.ContainsText(text))
+            if (ContainsText(text))
                 this[text] = stc;
             else
                 items.Add(stc);
@@ -231,10 +230,7 @@ namespace CubePrimer
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            foreach (var stc in items)
-            {
-                yield return stc;
-            }
+            return items.GetEnumerator();
         }
 
         public IEnumerable<Shortcut> Menus()

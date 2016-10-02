@@ -1,6 +1,7 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
-namespace CubePrimer
+namespace RobertLw.Interest.CubePrimer
 {
     struct Common
     {
@@ -49,6 +50,7 @@ namespace CubePrimer
         Z = 3
     }
 
+    [Flags]
     public enum SIDE
     {
         FIRST = 1,

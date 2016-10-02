@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace CubePrimer
+namespace RobertLw.Interest.CubePrimer.Controls
 {
     class TreeViewEx : TreeView
     {

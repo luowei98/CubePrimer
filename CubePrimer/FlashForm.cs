@@ -3,9 +3,9 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using CubePrimer.Properties;
+using RobertLw.Interest.CubePrimer.Properties;
 
-namespace CubePrimer
+namespace RobertLw.Interest.CubePrimer
 {
 
     public partial class FlashForm : Form

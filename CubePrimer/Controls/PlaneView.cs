@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using RobertLw.Interest.CubePrimer.Data;
 
-namespace CubePrimer
+namespace RobertLw.Interest.CubePrimer.Controls
 {
     public partial class PlaneView : UserControl
     {

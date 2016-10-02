@@ -2,11 +2,12 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
+using RobertLw.Interest.CubePrimer.Data;
 using RobertLw.OpenGL.Base;
 using RobertLw.OpenGL.Windows;
 
 
-namespace CubePrimer
+namespace RobertLw.Interest.CubePrimer.Controls
 {
     public partial class AniCube : SimpleOpenGlControl
     {
@@ -20,7 +21,7 @@ namespace CubePrimer
 
         #region private fields
         // texture
-        private int[] texture = new int[1];
+        private readonly int[] texture = new int[1];
 
         // rotation
         private float xRot;
@@ -93,7 +94,7 @@ namespace CubePrimer
         private void AniCube_Load(object sender, EventArgs e)
         {
             InitGL();
-            ReSizeGLScene(this.Width, this.Height);
+            ResizeGLScene(this.Width, this.Height);
 
             Init();
         }
@@ -106,7 +107,7 @@ namespace CubePrimer
             long milliseconds = (currentMs - lastMs) / 10000;
             lastMs = currentMs;
 
-            aniAngle += (float)(milliseconds) / 20.0f * AnimateSpeed;
+            aniAngle += milliseconds / 20.0f * AnimateSpeed;
             if (aniAngle > (float)cubeData.MoveAngle)
             {
                 InitAni();
@@ -183,7 +184,7 @@ namespace CubePrimer
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            ReSizeGLScene(this.Width, this.Height);
+            ResizeGLScene(this.Width, this.Height);
         }
 
         #endregion
@@ -265,7 +266,7 @@ namespace CubePrimer
             return true;
         }
 
-        private static void ReSizeGLScene(int width, int height)
+        private static void ResizeGLScene(int width, int height)
         {
             if (width > height)
                 Gl.glViewport(0, 0, width, height);
@@ -284,7 +285,7 @@ namespace CubePrimer
         private float[] GetColor(int colorIdx)
         {
             Color c = Common.CurColor[colorIdx >= 0 && colorIdx <= 7 ? colorIdx : 7];
-            return new float[] { (float)c.R / 0xff, (float)c.G / 0xff, (float)c.B / 0xff };
+            return new[] { (float)c.R / 0xff, (float)c.G / 0xff, (float)c.B / 0xff };
         }
 
         private bool LoadGLTextures()

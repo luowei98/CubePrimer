@@ -8,7 +8,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
 
-namespace CubePrimer
+namespace RobertLw.Interest.CubePrimer.Controls
 {
     class ListViewEx : ListView
     {

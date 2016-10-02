@@ -1,4 +1,4 @@
-﻿namespace CubePrimer
+﻿namespace RobertLw.Interest.CubePrimer
 {
     partial class MainForm
     {
@@ -53,8 +53,8 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.webBrowser = new System.Windows.Forms.WebBrowser();
-            this.listView = new CubePrimer.ListViewEx();
-            this.cubeView = new CubePrimer.CubeView();
+            this.listView = new Controls.ListViewEx();
+            this.cubeView = new Controls.CubeView();
             this.menu.SuspendLayout();
             this.status.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitAll)).BeginInit();
@@ -208,7 +208,7 @@
             this.splitAll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.splitAll.DataBindings.Add(new System.Windows.Forms.Binding("SplitterDistance", global::CubePrimer.Properties.Settings.Default, "SplitAllDistance", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.splitAll.DataBindings.Add(new System.Windows.Forms.Binding("SplitterDistance", global::RobertLw.Interest.CubePrimer.Properties.Settings.Default, "SplitAllDistance", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.splitAll.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.splitAll.Location = new System.Drawing.Point(0, 32);
             this.splitAll.Name = "splitAll";
@@ -221,7 +221,7 @@
             // 
             this.splitAll.Panel2.Controls.Add(this.tabControl);
             this.splitAll.Size = new System.Drawing.Size(784, 358);
-            this.splitAll.SplitterDistance = global::CubePrimer.Properties.Settings.Default.SplitAllDistance;
+            this.splitAll.SplitterDistance = global::RobertLw.Interest.CubePrimer.Properties.Settings.Default.SplitAllDistance;
             this.splitAll.TabIndex = 0;
             this.splitAll.TabStop = false;
             this.splitAll.MouseDown += new System.Windows.Forms.MouseEventHandler(this.splitAll_MouseDown);
@@ -309,8 +309,8 @@
             this.cubeView.StepsNextColor = System.Drawing.Color.Yellow;
             this.cubeView.TabIndex = 2;
             this.cubeView.Zoom = 57.14286F;
-            this.cubeView.OnOptionAnim += new CubePrimer.CubeView.OptionAnimEvent(this.cubeView_OnOptionAnim);
-            this.cubeView.OnOptionSteps += new CubePrimer.CubeView.OptionStepsEvent(this.cubeView_OnOptionSteps);
+            this.cubeView.OnOptionAnim += new Controls.CubeView.OptionAnimEvent(this.cubeView_OnOptionAnim);
+            this.cubeView.OnOptionSteps += new Controls.CubeView.OptionStepsEvent(this.cubeView_OnOptionSteps);
             // 
             // MainForm
             // 
@@ -356,7 +356,7 @@
         private System.Windows.Forms.ToolStripMenuItem menuItemLoad;
         private System.Windows.Forms.ImageList imageList;
         private System.Windows.Forms.ToolStripComboBox comboContents;
-        private CubePrimer.ListViewEx listView;
+        private Controls.ListViewEx listView;
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
@@ -372,7 +372,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem menuItemShortcuts;
         private System.Windows.Forms.WebBrowser webBrowser;
-        internal CubeView cubeView;
+        internal Controls.CubeView cubeView;
         private System.Windows.Forms.ToolStripMenuItem menuItemReload;
     }
 }

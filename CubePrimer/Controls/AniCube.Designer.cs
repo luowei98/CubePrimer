@@ -1,4 +1,4 @@
-﻿namespace CubePrimer
+﻿namespace RobertLw.Interest.CubePrimer.Controls
 {
     partial class AniCube
     {

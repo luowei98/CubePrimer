@@ -1,4 +1,4 @@
-﻿namespace CubePrimer
+﻿namespace RobertLw.Interest.CubePrimer.Controls
 {
     partial class CubeView
     {
@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CubeView));
             this.tlpTop = new System.Windows.Forms.TableLayoutPanel();
-            this.aniCube = new CubePrimer.AniCube();
+            this.aniCube = new RobertLw.Interest.CubePrimer.Controls.AniCube();
             this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.menuItemAni2Back = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemAni2Next = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,9 +47,9 @@
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.menuItemOptionAnim = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemOptionSteps = new System.Windows.Forms.ToolStripMenuItem();
-            this.planeView = new CubePrimer.PlaneView();
+            this.planeView = new RobertLw.Interest.CubePrimer.Controls.PlaneView();
             this.tlpView = new System.Windows.Forms.TableLayoutPanel();
-            this.stepView = new CubePrimer.StepView();
+            this.stepView = new RobertLw.Interest.CubePrimer.Controls.StepView();
             this.tlpAll = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.buttonBegin = new System.Windows.Forms.Button();

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using System.Globalization;
-using CubePrimer.Properties;
+//using CubePrimer.Properties;
 
-namespace CubePrimer
+namespace RobertLw.Interest.CubePrimer
 {
     static class Program
     {

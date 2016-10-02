@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 
 
-namespace CubePrimer
+namespace RobertLw.Interest.CubePrimer.Data
 {
     public class CubeData
     {
@@ -326,8 +326,8 @@ namespace CubePrimer
         {
             if (string.IsNullOrEmpty(step)) return true;
 
-            if (step.Count(c => c == '(' ? true : false) !=
-                step.Count(c => c == ')' ? true : false))
+            if (step.Count(c => c == '(') !=
+                step.Count(c => c == ')'))
                 return false;
 
             step = step.Replace("2'", LEGAL_SUFFIX);
@@ -364,7 +364,7 @@ namespace CubePrimer
                                 if (i != -1)
                                 {
                                     char c = value[i];
-                                    model[x, y, z, f] = (c >= '0' && c < '7') ? (int)c - 48 : 7;
+                                    model[x, y, z, f] = (c >= '0' && c < '7') ? c - 48 : 7;
                                 }
                             }
         }
@@ -620,7 +620,7 @@ namespace CubePrimer
 
     }
 
-    #region customer exceptioin
+    #region extend exceptioin
     public class BadCubeValueException : ApplicationException
     {
         public BadCubeValueException(string message) : base(message) { }

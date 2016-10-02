@@ -10,9 +10,10 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using CubePrimer.Properties;
+using RobertLw.Interest.CubePrimer.Data;
+using RobertLw.Interest.CubePrimer.Properties;
 
-namespace CubePrimer
+namespace RobertLw.Interest.CubePrimer
 {
     public partial class MainForm : Form
     {
@@ -837,7 +838,7 @@ namespace CubePrimer
             shortcuts = (ShortcutsSaver)bf.Deserialize(ms);
 
             // 将所有菜单快捷键设置进菜单
-            foreach (Shortcut stc in shortcuts.Menus())
+            foreach (Data.Shortcut stc in shortcuts.Menus())
             {
                 ToolStripMenuItem menu = FindMenu(stc.Text);
                 if (menu == null) continue;

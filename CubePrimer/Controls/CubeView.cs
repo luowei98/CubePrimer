@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using CubePrimer.Properties;
+using RobertLw.Interest.CubePrimer.Data;
+using RobertLw.Interest.CubePrimer.Properties;
 
-namespace CubePrimer
+namespace RobertLw.Interest.CubePrimer.Controls
 {
     public partial class CubeView : UserControl
     {
@@ -59,7 +60,7 @@ namespace CubePrimer
             set
             {
                 if (value < 0) value = -value;
-                if (value == 0) value = 0.1f;
+                if (Math.Abs(value) < 0.0001) value = 0.1f;
 
                 aniCube.AnimateSpeed = value / 5.0f;
             }
@@ -108,10 +109,7 @@ namespace CubePrimer
             }
         }
 
-        public ContextMenuStrip TopContextMenuStrip
-        {
-            get { return aniCube.ContextMenuStrip; }
-        }
+        public ContextMenuStrip TopContextMenuStrip => aniCube.ContextMenuStrip;
 
         #endregion
 
@@ -128,7 +126,7 @@ namespace CubePrimer
         public CubeView()
         {
             InitializeComponent();
-            this.MouseWheel += new MouseEventHandler(this.CubeView_MouseWheel);
+            this.MouseWheel += this.CubeView_MouseWheel;
         }
 
         #endregion
@@ -162,10 +160,7 @@ namespace CubePrimer
                        (int)tableLayoutPanel1.ColumnStyles[4].Width;
             tableLayoutPanel1.MinimumSize = new Size(minw, tableLayoutPanel1.Height);
 
-            if (this.DesignMode)
-                cubeData = new CubeData(Common.DEF_VALUE);
-            else
-                cubeData = new CubeData();
+            cubeData = this.DesignMode ? new CubeData(Common.DEF_VALUE) : new CubeData();
             cubeData.OnMoved += cubeData_OnMoved;
             cubeData.OnAtBegin += cubeData_OnAtBegin;
             cubeData.OnAtEnd += cubeData_OnAtEnd;
@@ -209,10 +204,10 @@ namespace CubePrimer
 
             EnableControl(true,
                           new Control[] { buttonBegin, buttonPrev },
-                          new ToolStripMenuItem[] { menuItemAni2Back, 
-                                                    menuItemAni2Begin, 
-                                                    menuItemSet2Back, 
-                                                    menuItemSet2Begin });
+                          new[] { menuItemAni2Back, 
+                                  menuItemAni2Begin, 
+                                  menuItemSet2Back, 
+                                  menuItemSet2Begin });
         }
 
         private void cubeData_OnAtEnd(object sender, EventArgs e)
@@ -222,10 +217,10 @@ namespace CubePrimer
 
             EnableControl(true,
                           new Control[] { buttonNext },
-                          new ToolStripMenuItem[] { menuItemAni2Next, 
-                                                    menuItemAni2End, 
-                                                    menuItemSet2Next, 
-                                                    menuItemSet2End });
+                          new[] { menuItemAni2Next, 
+                                  menuItemAni2End, 
+                                  menuItemSet2Next, 
+                                  menuItemSet2End });
         }
 
         private void trackBar_Scroll(object sender, EventArgs e)
@@ -284,14 +279,12 @@ namespace CubePrimer
 
         private void menuItemOptionAnim_Click(object sender, EventArgs e)
         {
-            if (OnOptionAnim != null)
-                OnOptionAnim(this, new EventArgs());
+            OnOptionAnim?.Invoke(this, new EventArgs());
         }
 
         private void menuItemOptionSteps_Click(object sender, EventArgs e)
         {
-            if (OnOptionSteps != null)
-                OnOptionSteps(this, new EventArgs());
+            OnOptionSteps?.Invoke(this, new EventArgs());
         }
 
         #endregion
@@ -342,7 +335,7 @@ namespace CubePrimer
 
             EnableControl(false,
                           new Control[] { buttonPlay },
-                          new ToolStripMenuItem[] { menuItemAni2Begin, menuItemAni2End });
+                          new[] { menuItemAni2Begin, menuItemAni2End });
             buttonPlay.BackgroundImage = Resources.playback_pause;
 
             if (aniCube.Ready && cubeData.GoBack())
@@ -360,7 +353,7 @@ namespace CubePrimer
 
             EnableControl(false,
                           new Control[] { buttonPlay },
-                          new ToolStripMenuItem[] { menuItemAni2Begin, menuItemAni2End });
+                          new[] { menuItemAni2Begin, menuItemAni2End });
             buttonPlay.BackgroundImage = Resources.playback_pause;
 
             if (aniCube.Ready && cubeData.GoNext())
