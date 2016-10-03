@@ -85,10 +85,7 @@ namespace RobertLw.Interest.CubePrimer
             this.Visible = false;
 
             // 恢复打开文件历史
-            if (Settings.Default.LoadedFiles == null)
-                loadedFiles = new ArrayList();
-            else
-                loadedFiles = Settings.Default.LoadedFiles;
+            loadedFiles = Settings.Default.LoadedFiles ?? new ArrayList();
             SetLoadedMenu();
 
             // 初始化 Flash 播放器
@@ -280,9 +277,8 @@ namespace RobertLw.Interest.CubePrimer
                 else
                     grpkey.Add("未分组");
 
-            grpkey = (List<string>)grpkey.Distinct();
             grpkey.Sort();
-            foreach (var g in grpkey)
+            foreach (var g in grpkey.Distinct())
                 listView.Groups.Add(g, g);
 
             // 添加显示项目

@@ -93,7 +93,8 @@ namespace RobertLw.Interest.CubePrimer.Controls
         #region event
         private void AniCube_Load(object sender, EventArgs e)
         {
-            InitGL();
+            if (!InitGL()) throw new Exception();
+
             ResizeGLScene(this.Width, this.Height);
 
             Init();
@@ -260,10 +261,7 @@ namespace RobertLw.Interest.CubePrimer.Controls
             Gl.glEnable(Gl.GL_COLOR_MATERIAL);
             Gl.glHint(Gl.GL_PERSPECTIVE_CORRECTION_HINT, Gl.GL_NICEST);
 
-            if (!LoadGLTextures())
-                return false;
-
-            return true;
+            return LoadGLTextures();
         }
 
         private static void ResizeGLScene(int width, int height)
@@ -275,7 +273,7 @@ namespace RobertLw.Interest.CubePrimer.Controls
             Gl.glMatrixMode(Gl.GL_PROJECTION);
             Gl.glLoadIdentity();
             if (width > height)
-                Glu.gluPerspective(30.0, width / (height == 0 ? 1.0 : (float)height), 0.1, 80.0);
+                Glu.gluPerspective(30.0, width / (height == 0 ? 1.0 : height), 0.1, 80.0);
             else
                 Glu.gluPerspective(30.0, 1.0, 0.1, 80.0);
             Gl.glMatrixMode(Gl.GL_MODELVIEW);
@@ -325,9 +323,9 @@ namespace RobertLw.Interest.CubePrimer.Controls
             }
         }
 
-        private bool DrawGLScene()
+        private void DrawGLScene()
         {
-            if (Data == null) return false;
+            if (Data == null) return;
 
             Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
 
@@ -405,8 +403,6 @@ namespace RobertLw.Interest.CubePrimer.Controls
 
             Gl.glFlush();
             base.SwapBuffers();
-
-            return true;
         }
 
         #endregion

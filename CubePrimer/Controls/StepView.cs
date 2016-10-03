@@ -174,7 +174,7 @@ namespace RobertLw.Interest.CubePrimer.Controls
             StringFormat format = new StringFormat();
             RectangleF rect = new RectangleF(0.0f, 0.0f, 1000.0f, 1000.0f);
             CharacterRange[] ranges = { new CharacterRange(0, text.Length) };
-            Region[] regions = new Region[1];
+            Region[] regions;
 
             format.SetMeasurableCharacterRanges(ranges);
             format.FormatFlags = StringFormatFlags.MeasureTrailingSpaces;

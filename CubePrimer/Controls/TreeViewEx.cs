@@ -4,10 +4,8 @@ using System.Windows.Forms;
 
 namespace RobertLw.Interest.CubePrimer.Controls
 {
-    class TreeViewEx : TreeView
+    internal class TreeViewEx : TreeView
     {
-        public TreeViewEx() { }
-
         #region use windows 7 theme
         [DllImport("uxtheme.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
         internal static extern int SetWindowTheme(IntPtr hWnd, string appName, string partList);
