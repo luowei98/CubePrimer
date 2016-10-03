@@ -1,4 +1,4 @@
-﻿namespace CubePrimer
+﻿namespace RobertLw.Interest.CubePrimer
 {
     partial class OptionForm
     {
@@ -70,12 +70,12 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.buttonClear = new System.Windows.Forms.Button();
-            this.listViewKeys = new CubePrimer.ListViewEx();
+            this.listViewKeys = new Controls.ListViewEx();
             this.columnHeaderMethod = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderKey = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderKeyAcc = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.treeView = new CubePrimer.TreeViewEx();
+            this.treeView = new Controls.TreeViewEx();
             this.panelAnim.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericZoom)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -607,7 +607,7 @@
 
         #endregion
 
-        private CubePrimer.TreeViewEx treeView;
+        private Controls.TreeViewEx treeView;
         private System.Windows.Forms.Panel panelAnim;
         private System.Windows.Forms.NumericUpDown numericSpeed;
         private System.Windows.Forms.Label label1;
@@ -640,7 +640,7 @@
         private System.Windows.Forms.Panel panelStepSub;
         private System.Windows.Forms.Panel panelShortcuts;
         private System.Windows.Forms.Label label4;
-        private ListViewEx listViewKeys;
+        private Controls.ListViewEx listViewKeys;
         private System.Windows.Forms.ColumnHeader columnHeaderMethod;
         private System.Windows.Forms.ColumnHeader columnHeaderKey;
         private System.Windows.Forms.ColumnHeader columnHeaderKeyAcc;

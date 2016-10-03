@@ -10,9 +10,11 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using CubePrimer.Properties;
+using RobertLw.Interest.CubePrimer.Data;
+using RobertLw.Interest.CubePrimer.Properties;
+// ReSharper disable LocalizableElement
 
-namespace CubePrimer
+namespace RobertLw.Interest.CubePrimer
 {
     public partial class MainForm : Form
     {
@@ -83,10 +85,7 @@ namespace CubePrimer
             this.Visible = false;
 
             // 恢复打开文件历史
-            if (Settings.Default.LoadedFiles == null)
-                loadedFiles = new ArrayList();
-            else
-                loadedFiles = Settings.Default.LoadedFiles;
+            loadedFiles = Settings.Default.LoadedFiles ?? new ArrayList();
             SetLoadedMenu();
 
             // 初始化 Flash 播放器
@@ -257,7 +256,10 @@ namespace CubePrimer
                         img = new Bitmap(fileDir + Path.DirectorySeparatorChar + fn + ".png");
                         imageList.Images.Add(fn, img);
                     }
-                    catch (Exception) { }
+                    catch (Exception)
+                    {
+                        // ignored
+                    }
                 }
                 val.ImgLoaded = true;
             }
@@ -275,9 +277,8 @@ namespace CubePrimer
                 else
                     grpkey.Add("未分组");
 
-            grpkey.Distinct();
             grpkey.Sort();
-            foreach (var g in grpkey)
+            foreach (var g in grpkey.Distinct())
                 listView.Groups.Add(g, g);
 
             // 添加显示项目
@@ -290,7 +291,7 @@ namespace CubePrimer
 
                 lvi = new ListViewItem(ss[0] + "\r" + ss[2], txt, listView.Groups[grp]);
                 lvi.ToolTipText = ss[2];
-                lvi.Tag = new string[] { ss[0], ss[1], ss[2] };
+                lvi.Tag = new[] { ss[0], ss[1], ss[2] };
 
                 listView.Items.Add(lvi);
                 //listView.Update();
@@ -527,8 +528,8 @@ namespace CubePrimer
             {
                 mnu = new ToolStripMenuItem();
                 mnu.Text = i++ + " " + CutPath(item, 48);
-                mnu.Click += new System.EventHandler(menuItemFiles_Click);
-                menuItemHistory.DropDownItems.AddRange(new ToolStripItem[] { mnu });
+                mnu.Click += menuItemFiles_Click;
+                menuItemHistory.DropDownItems.AddRange(new[] { mnu });
             }
         }
 
@@ -555,7 +556,7 @@ namespace CubePrimer
             int n = 0;
             foreach (var c in path.Reverse())
             {
-                if ((int)c <= 255)
+                if (c <= 255)
                     n++;
                 else
                     n += 2;
@@ -570,9 +571,9 @@ namespace CubePrimer
 
         private void LoadViewSetting()
         {
-            if (Settings.Default.ViewSpeed != 0)
+            if (Math.Abs(Settings.Default.ViewSpeed) > GlobalValue.MinFloat)
                 cubeView.Speed = Settings.Default.ViewSpeed;
-            if (Settings.Default.ViewZoom != 0)
+            if (Math.Abs(Settings.Default.ViewZoom) > GlobalValue.MinFloat)
                 cubeView.Zoom = Settings.Default.ViewZoom;
 
             cubeView.ShowPlane = Settings.Default.ViewShowPlane;
@@ -685,11 +686,14 @@ namespace CubePrimer
 
             if (webBrowser.Document == null)
                 webBrowser.Navigate("about:blank");
-            webBrowser.Document.OpenNew(true);
-            webBrowser.Document.Write(doc);
-            webBrowser.Refresh();
-            webBrowser.Focus();
-            webBrowser.Document.Focus();
+            else
+            {
+                webBrowser.Document.OpenNew(true);
+                webBrowser.Document.Write(doc);
+                webBrowser.Refresh();
+                webBrowser.Focus();
+                webBrowser.Document?.Focus();
+            }
         }
 
         private void CreatePreviewImage(string fn)
@@ -718,7 +722,10 @@ namespace CubePrimer
                     p.WaitForExit();
                     p.Close();
                 }
-                catch { }
+                catch (Exception)
+                {
+                    // ignored
+                }
             }
         }
 
@@ -765,10 +772,10 @@ namespace CubePrimer
             if (cmbItem == null) return "";
 
             ListView.SelectedListViewItemCollection lsvItems = listView.SelectedItems;
-            if (lsvItems == null || lsvItems.Count == 0) return "";
+            if (lsvItems.Count == 0) return "";
 
             string[] tag = (string[])lsvItems[0].Tag;
-            return string.Format("{0}{1}", cmbItem.ToString(), tag[0].Trim());
+            return string.Format("{0}{1}", cmbItem, tag[0].Trim());
         }
 
         private void ExeMethod(Control obj, string methodName)
@@ -837,10 +844,10 @@ namespace CubePrimer
             shortcuts = (ShortcutsSaver)bf.Deserialize(ms);
 
             // 将所有菜单快捷键设置进菜单
-            foreach (Shortcut stc in shortcuts.Menus())
+            foreach (Data.Shortcut stc in shortcuts.Menus())
             {
-                ToolStripMenuItem menu = FindMenu(stc.Text);
-                if (menu == null) continue;
+                ToolStripMenuItem m = FindMenu(stc.Text);
+                if (m == null) continue;
 
                 if (stc.Key != Keys.None)
                 {
@@ -848,7 +855,7 @@ namespace CubePrimer
                     if (stc.Alt) key |= Keys.Alt;
                     if (stc.Ctrl) key |= Keys.Control;
                     if (stc.Shift) key |= Keys.Shift;
-                    menu.ShortcutKeys = key;
+                    m.ShortcutKeys = key;
                 }
             }
         }

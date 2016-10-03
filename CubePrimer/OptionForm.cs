@@ -6,8 +6,10 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using RobertLw.Interest.CubePrimer.Controls;
+using RobertLw.Interest.CubePrimer.Data;
 
-namespace CubePrimer
+namespace RobertLw.Interest.CubePrimer
 {
     public partial class OptionForm : Form
     {
@@ -28,7 +30,7 @@ namespace CubePrimer
         private CubeView cubeView;
 
         private ShortcutsSaver shortcuts;
-        private Shortcut currShortcut;
+        private Data.Shortcut currShortcut;
 
         #endregion
 
@@ -163,7 +165,7 @@ namespace CubePrimer
         {
             if (listViewKeys.SelectedItems.Count == 0) return;
 
-            currShortcut = new Shortcut(shortcuts[listViewKeys.SelectedItems[0].Text]);
+            currShortcut = new Data.Shortcut(shortcuts[listViewKeys.SelectedItems[0].Text]);
             textBoxKeys.Text = ShortcutKey2String(currShortcut.Key,
                                                   currShortcut.Alt,
                                                   currShortcut.Ctrl,
@@ -247,7 +249,7 @@ namespace CubePrimer
 
         private void LoadStcOption()
         {
-            foreach (Shortcut stc in shortcuts)
+            foreach (Data.Shortcut stc in shortcuts)
             {
                 string key = Key2String(stc.Key);
 

@@ -1,16 +1,18 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using CubePrimer.Properties;
+using RobertLw.Interest.CubePrimer.Properties;
 
-namespace CubePrimer
+namespace RobertLw.Interest.CubePrimer
 {
 
     public partial class FlashForm : Form
     {
-        private class Win32
+        [SuppressMessage("ReSharper", "UnusedMember.Local")]
+        private static class Win32
         {
             public enum Bool
             {
@@ -92,7 +94,7 @@ namespace CubePrimer
         private void FlashForm_Load(object sender, EventArgs e)
         {
             Bitmap bitmap = Resources.imgCube;
-            SetBitmap(bitmap, (byte)255);
+            SetBitmap(bitmap, 255);
         }
 
         protected override void WndProc(ref Message m)
@@ -133,11 +135,13 @@ namespace CubePrimer
                 Win32.Size size = new Win32.Size(bitmap.Width, bitmap.Height);
                 Win32.Point pointSource = new Win32.Point(0, 0);
                 Win32.Point topPos = new Win32.Point(Left, Top);
-                Win32.BLENDFUNCTION blend = new Win32.BLENDFUNCTION();
-                blend.BlendOp = Win32.AC_SRC_OVER;
-                blend.BlendFlags = 0;
-                blend.SourceConstantAlpha = opacity;
-                blend.AlphaFormat = Win32.AC_SRC_ALPHA;
+                Win32.BLENDFUNCTION blend = new Win32.BLENDFUNCTION
+                {
+                    BlendOp = Win32.AC_SRC_OVER,
+                    BlendFlags = 0,
+                    SourceConstantAlpha = opacity,
+                    AlphaFormat = Win32.AC_SRC_ALPHA
+                };
 
                 Win32.UpdateLayeredWindow(Handle, screenDc, ref topPos, ref size, memDc, ref pointSource, 0, ref blend, Win32.ULW_ALPHA);
             }

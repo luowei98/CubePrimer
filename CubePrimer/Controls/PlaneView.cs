@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using RobertLw.Interest.CubePrimer.Data;
 
-namespace CubePrimer
+namespace RobertLw.Interest.CubePrimer.Controls
 {
     public partial class PlaneView : UserControl
     {
@@ -87,13 +88,12 @@ namespace CubePrimer
 
         private void PlaneView_Paint(object sender, PaintEventArgs e)
         {
-            if (Data != null && !string.IsNullOrEmpty(Data.Value))
+            if (!string.IsNullOrEmpty(Data?.Value))
             {
                 // box
-                SolidBrush b;
                 for (int i = 0; i < 54; i++)
                 {
-                    b = new SolidBrush(GetColor(Data.Value[i]));
+                    var b = new SolidBrush(GetColor(Data.Value[i]));
                     e.Graphics.FillRectangle(b, GetRect(i));
                 }
             }
@@ -160,7 +160,7 @@ namespace CubePrimer
 
         private Color GetColor(char c)
         {
-            int i = (int)c - 48;
+            int i = c - 48;
             return Common.CurColor[i];
         }
 

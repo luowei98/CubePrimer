@@ -2,11 +2,12 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
-using Tao.OpenGl;
-using Tao.Platform.Windows;
+using RobertLw.Interest.CubePrimer.Data;
+using RobertLw.OpenGL.Base;
+using RobertLw.OpenGL.Windows;
 
 
-namespace CubePrimer
+namespace RobertLw.Interest.CubePrimer.Controls
 {
     public partial class AniCube : SimpleOpenGlControl
     {
@@ -20,7 +21,7 @@ namespace CubePrimer
 
         #region private fields
         // texture
-        private int[] texture = new int[1];
+        private readonly int[] texture = new int[1];
 
         // rotation
         private float xRot;
@@ -92,8 +93,9 @@ namespace CubePrimer
         #region event
         private void AniCube_Load(object sender, EventArgs e)
         {
-            InitGL();
-            ReSizeGLScene(this.Width, this.Height);
+            if (!InitGL()) throw new Exception();
+
+            ResizeGLScene(this.Width, this.Height);
 
             Init();
         }
@@ -106,7 +108,7 @@ namespace CubePrimer
             long milliseconds = (currentMs - lastMs) / 10000;
             lastMs = currentMs;
 
-            aniAngle += (float)(milliseconds) / 20.0f * AnimateSpeed;
+            aniAngle += milliseconds / 20.0f * AnimateSpeed;
             if (aniAngle > (float)cubeData.MoveAngle)
             {
                 InitAni();
@@ -183,7 +185,7 @@ namespace CubePrimer
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            ReSizeGLScene(this.Width, this.Height);
+            ResizeGLScene(this.Width, this.Height);
         }
 
         #endregion
@@ -259,13 +261,10 @@ namespace CubePrimer
             Gl.glEnable(Gl.GL_COLOR_MATERIAL);
             Gl.glHint(Gl.GL_PERSPECTIVE_CORRECTION_HINT, Gl.GL_NICEST);
 
-            if (!LoadGLTextures())
-                return false;
-
-            return true;
+            return LoadGLTextures();
         }
 
-        private static void ReSizeGLScene(int width, int height)
+        private static void ResizeGLScene(int width, int height)
         {
             if (width > height)
                 Gl.glViewport(0, 0, width, height);
@@ -274,7 +273,7 @@ namespace CubePrimer
             Gl.glMatrixMode(Gl.GL_PROJECTION);
             Gl.glLoadIdentity();
             if (width > height)
-                Glu.gluPerspective(30.0, width / (height == 0 ? 1.0 : (float)height), 0.1, 80.0);
+                Glu.gluPerspective(30.0, width / (height == 0 ? 1.0 : height), 0.1, 80.0);
             else
                 Glu.gluPerspective(30.0, 1.0, 0.1, 80.0);
             Gl.glMatrixMode(Gl.GL_MODELVIEW);
@@ -284,7 +283,7 @@ namespace CubePrimer
         private float[] GetColor(int colorIdx)
         {
             Color c = Common.CurColor[colorIdx >= 0 && colorIdx <= 7 ? colorIdx : 7];
-            return new float[] { (float)c.R / 0xff, (float)c.G / 0xff, (float)c.B / 0xff };
+            return new[] { (float)c.R / 0xff, (float)c.G / 0xff, (float)c.B / 0xff };
         }
 
         private bool LoadGLTextures()
@@ -324,9 +323,9 @@ namespace CubePrimer
             }
         }
 
-        private bool DrawGLScene()
+        private void DrawGLScene()
         {
-            if (Data == null) return false;
+            if (Data == null) return;
 
             Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
 
@@ -404,8 +403,6 @@ namespace CubePrimer
 
             Gl.glFlush();
             base.SwapBuffers();
-
-            return true;
         }
 
         #endregion
