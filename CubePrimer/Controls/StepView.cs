@@ -172,7 +172,7 @@ namespace RobertLw.Interest.CubePrimer.Controls
                 return new SizeF(0.0f, 0.0f);
 
             StringFormat format = new StringFormat();
-            RectangleF rect = new RectangleF(0.0f, 0.0f, 1000.0f, 1000.0f);
+            RectangleF rect = new RectangleF(0.0f, 0.0f, 10000.0f, 1000.0f);
             CharacterRange[] ranges = { new CharacterRange(0, text.Length) };
             Region[] regions;
 
