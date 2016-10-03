@@ -12,6 +12,7 @@ using System.Threading;
 using System.Windows.Forms;
 using RobertLw.Interest.CubePrimer.Data;
 using RobertLw.Interest.CubePrimer.Properties;
+// ReSharper disable LocalizableElement
 
 namespace RobertLw.Interest.CubePrimer
 {
@@ -258,7 +259,10 @@ namespace RobertLw.Interest.CubePrimer
                         img = new Bitmap(fileDir + Path.DirectorySeparatorChar + fn + ".png");
                         imageList.Images.Add(fn, img);
                     }
-                    catch (Exception) { }
+                    catch (Exception)
+                    {
+                        // ignored
+                    }
                 }
                 val.ImgLoaded = true;
             }
@@ -276,7 +280,7 @@ namespace RobertLw.Interest.CubePrimer
                 else
                     grpkey.Add("未分组");
 
-            grpkey.Distinct();
+            grpkey = (List<string>)grpkey.Distinct();
             grpkey.Sort();
             foreach (var g in grpkey)
                 listView.Groups.Add(g, g);
@@ -291,7 +295,7 @@ namespace RobertLw.Interest.CubePrimer
 
                 lvi = new ListViewItem(ss[0] + "\r" + ss[2], txt, listView.Groups[grp]);
                 lvi.ToolTipText = ss[2];
-                lvi.Tag = new string[] { ss[0], ss[1], ss[2] };
+                lvi.Tag = new[] { ss[0], ss[1], ss[2] };
 
                 listView.Items.Add(lvi);
                 //listView.Update();
@@ -528,8 +532,8 @@ namespace RobertLw.Interest.CubePrimer
             {
                 mnu = new ToolStripMenuItem();
                 mnu.Text = i++ + " " + CutPath(item, 48);
-                mnu.Click += new System.EventHandler(menuItemFiles_Click);
-                menuItemHistory.DropDownItems.AddRange(new ToolStripItem[] { mnu });
+                mnu.Click += menuItemFiles_Click;
+                menuItemHistory.DropDownItems.AddRange(new[] { mnu });
             }
         }
 
@@ -556,7 +560,7 @@ namespace RobertLw.Interest.CubePrimer
             int n = 0;
             foreach (var c in path.Reverse())
             {
-                if ((int)c <= 255)
+                if (c <= 255)
                     n++;
                 else
                     n += 2;
@@ -571,9 +575,9 @@ namespace RobertLw.Interest.CubePrimer
 
         private void LoadViewSetting()
         {
-            if (Settings.Default.ViewSpeed != 0)
+            if (Math.Abs(Settings.Default.ViewSpeed) > GlobalValue.MinFloat)
                 cubeView.Speed = Settings.Default.ViewSpeed;
-            if (Settings.Default.ViewZoom != 0)
+            if (Math.Abs(Settings.Default.ViewZoom) > GlobalValue.MinFloat)
                 cubeView.Zoom = Settings.Default.ViewZoom;
 
             cubeView.ShowPlane = Settings.Default.ViewShowPlane;
@@ -686,11 +690,14 @@ namespace RobertLw.Interest.CubePrimer
 
             if (webBrowser.Document == null)
                 webBrowser.Navigate("about:blank");
-            webBrowser.Document.OpenNew(true);
-            webBrowser.Document.Write(doc);
-            webBrowser.Refresh();
-            webBrowser.Focus();
-            webBrowser.Document.Focus();
+            else
+            {
+                webBrowser.Document.OpenNew(true);
+                webBrowser.Document.Write(doc);
+                webBrowser.Refresh();
+                webBrowser.Focus();
+                webBrowser.Document?.Focus();
+            }
         }
 
         private void CreatePreviewImage(string fn)
@@ -719,7 +726,10 @@ namespace RobertLw.Interest.CubePrimer
                     p.WaitForExit();
                     p.Close();
                 }
-                catch { }
+                catch (Exception)
+                {
+                    // ignored
+                }
             }
         }
 
@@ -766,10 +776,10 @@ namespace RobertLw.Interest.CubePrimer
             if (cmbItem == null) return "";
 
             ListView.SelectedListViewItemCollection lsvItems = listView.SelectedItems;
-            if (lsvItems == null || lsvItems.Count == 0) return "";
+            if (lsvItems.Count == 0) return "";
 
             string[] tag = (string[])lsvItems[0].Tag;
-            return string.Format("{0}{1}", cmbItem.ToString(), tag[0].Trim());
+            return string.Format("{0}{1}", cmbItem, tag[0].Trim());
         }
 
         private void ExeMethod(Control obj, string methodName)
@@ -840,8 +850,8 @@ namespace RobertLw.Interest.CubePrimer
             // 将所有菜单快捷键设置进菜单
             foreach (Data.Shortcut stc in shortcuts.Menus())
             {
-                ToolStripMenuItem menu = FindMenu(stc.Text);
-                if (menu == null) continue;
+                ToolStripMenuItem m = FindMenu(stc.Text);
+                if (m == null) continue;
 
                 if (stc.Key != Keys.None)
                 {
@@ -849,7 +859,7 @@ namespace RobertLw.Interest.CubePrimer
                     if (stc.Alt) key |= Keys.Alt;
                     if (stc.Ctrl) key |= Keys.Control;
                     if (stc.Shift) key |= Keys.Shift;
-                    menu.ShortcutKeys = key;
+                    m.ShortcutKeys = key;
                 }
             }
         }

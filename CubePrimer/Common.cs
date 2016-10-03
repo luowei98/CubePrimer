@@ -77,4 +77,8 @@ namespace RobertLw.Interest.CubePrimer
         NEXT = 1
     }
 
+    public static class GlobalValue
+    {
+        public static float MinFloat = 0.0001F;
+    }
 }

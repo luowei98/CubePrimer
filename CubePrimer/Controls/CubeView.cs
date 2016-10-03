@@ -60,7 +60,7 @@ namespace RobertLw.Interest.CubePrimer.Controls
             set
             {
                 if (value < 0) value = -value;
-                if (Math.Abs(value) < 0.0001) value = 0.1f;
+                if (Math.Abs(value) < GlobalValue.MinFloat) value = 0.1f;
 
                 aniCube.AnimateSpeed = value / 5.0f;
             }
