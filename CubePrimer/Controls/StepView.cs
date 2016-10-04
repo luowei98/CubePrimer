@@ -77,7 +77,7 @@ namespace RobertLw.Interest.CubePrimer.Controls
         {
             base.OnPaint(e);
 
-            if (Data == null || string.IsNullOrEmpty(Data.StepString))
+            if (string.IsNullOrEmpty(Data?.StepString))
                 return;
 
             string step;
@@ -139,7 +139,7 @@ namespace RobertLw.Interest.CubePrimer.Controls
         #region public methods
         public void ResizeFont()
         {
-            if (Data == null || string.IsNullOrEmpty(Data.StepString))
+            if (string.IsNullOrEmpty(Data?.StepString))
                 return;
 
             using (Graphics gc = this.CreateGraphics())
