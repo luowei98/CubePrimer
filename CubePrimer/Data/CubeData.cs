@@ -81,9 +81,6 @@ namespace RobertLw.Interest.CubePrimer.Data
         private int[, , ,] model;
         private string stepString;
 
-        private string[] steps;
-        private string[] stepsRev;
-        private int[] stepIndexs;
         private int[] stepGroup;
 
         private MOVE_DIREC moveFlg;
@@ -144,37 +141,40 @@ namespace RobertLw.Interest.CubePrimer.Data
             }
         }
 
+        public string[] Steps { get; private set; }
+
+        public int[] StepIndexs { get; private set; }
+
+        public string[] StepsRev { get; private set; }
+
         public int StepNo { get; private set; }
 
         public int StepsCount
         {
-            get { return steps != null ? steps.Length : 0; }
+            get { return Steps != null ? Steps.Length : 0; }
         }
 
         public string NextStep
         {
-            get { return steps != null && StepNo < StepsCount ? steps[StepNo] : ""; }
+            get { return Steps != null && StepNo < StepsCount ? Steps[StepNo] : ""; }
         }
 
         public int NextStepStrIdx
         {
-            get { return StepNo < StepsCount ? stepIndexs[StepNo] : StepString.Length; }
+            get { return StepNo < StepsCount ? StepIndexs[StepNo] : StepString.Length; }
         }
 
         public string LastStep
         {
-            get { return steps != null && StepNo != 0 ? steps[StepNo - 1] : ""; }
+            get { return Steps != null && StepNo != 0 ? Steps[StepNo - 1] : ""; }
         }
 
         public int LastStepStrIdx
         {
-            get { return StepNo != 0 ? stepIndexs[StepNo - 1] : 0; }
+            get { return StepNo != 0 ? StepIndexs[StepNo - 1] : 0; }
         }
 
-        public string BackStep
-        {
-            get { return stepsRev != null && StepNo > 0 ? stepsRev[StepsCount - StepNo] : ""; }
-        }
+        public string BackStep => StepsRev != null && StepNo > 0 ? StepsRev[StepsCount - StepNo] : "";
 
         public AXIS MoveAxis { get; private set; }
 
@@ -270,8 +270,8 @@ namespace RobertLw.Interest.CubePrimer.Data
             model = new int[3, 3, 3, 6];
             stepString = "";
 
-            steps = stepsRev = null;
-            stepIndexs = stepGroup = null;
+            Steps = StepsRev = null;
+            StepIndexs = stepGroup = null;
 
             StepNo = 0;
             InitMove();
@@ -297,8 +297,8 @@ namespace RobertLw.Interest.CubePrimer.Data
 
         private void InitSteps(string step)
         {
-            steps = stepsRev = null;
-            stepIndexs = stepGroup = null;
+            Steps = StepsRev = null;
+            StepIndexs = stepGroup = null;
 
             StepNo = 0;
             InitMove();
@@ -403,15 +403,15 @@ namespace RobertLw.Interest.CubePrimer.Data
             }
             ).Where(itm => itm != null);
 
-            steps = q.GroupBy(itm => itm.idx)
+            Steps = q.GroupBy(itm => itm.idx)
                      .Select(grp => string.Join("", grp.Select(g => g.val).ToArray()))
                      .ToArray();
 
-            stepIndexs = q.Where(itm => itm.flg)
+            StepIndexs = q.Where(itm => itm.flg)
                           .Select(itm => itm.idx)
                           .ToArray();
 
-            stepsRev = steps.Reverse().Select(itm => ReverseStep(itm)).ToArray();
+            StepsRev = Steps.Reverse().Select(ReverseStep).ToArray();
         }
 
         private void SetMove(string step)

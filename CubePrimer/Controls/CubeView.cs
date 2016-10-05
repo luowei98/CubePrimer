@@ -473,5 +473,10 @@ namespace RobertLw.Interest.CubePrimer.Controls
 
         #endregion
 
+        private void stepView_OnMove2Event(object sender, StepView.Move2EventArgs e)
+        {
+            MessageBox.Show(e.Move2StepIdx.ToString());
+
+        }
     }
 }

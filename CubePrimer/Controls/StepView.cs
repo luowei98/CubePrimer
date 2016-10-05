@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Text;
 using System.Windows.Forms;
 using RobertLw.Interest.CubePrimer.Data;
 
@@ -8,8 +9,28 @@ namespace RobertLw.Interest.CubePrimer.Controls
     public partial class StepView : UserControl
     {
         #region private fields
+        // 步法区域
         private SizeF textArea;
+        // 步法起始位置
         private PointF origin;
+        // 每一步的区域
+        private RectangleF[] stepsLocation;
+
+        #endregion
+
+        #region event fields
+        public delegate void Move2Event(object sender, Move2EventArgs e);
+        public event Move2Event OnMove2Event;
+
+        public class Move2EventArgs : EventArgs
+        {
+            public int Move2StepIdx;
+
+            public Move2EventArgs(int index)
+            {
+                Move2StepIdx = index;
+            }
+        }
 
         #endregion
 
@@ -23,7 +44,11 @@ namespace RobertLw.Interest.CubePrimer.Controls
                 cubeData = value;
                 if (cubeData != null)
                 {
-                    cubeData.OnStepChanged += (s, ea) => { ResizeFont(); this.Refresh(); };
+                    cubeData.OnStepChanged += (s, ea) =>
+                    {
+                        ResizeFont();
+                        this.Refresh();
+                    };
                     cubeData.OnMoved += (s, ea) =>
                     {
                         MovingFlag = MOVE_DIREC.NONE;
@@ -112,12 +137,6 @@ namespace RobertLw.Interest.CubePrimer.Controls
                                   this.Font,
                                   new SolidBrush(c),
                                   new PointF(origin.X + szDone.Width, origin.Y));
-
-            //Pen pen = new Pen(Color.Red);
-            //e.Graphics.DrawRectangle(pen,
-            //    new Rectangle(
-            //        new Point((int)origin.X, (int)origin.Y),
-            //        new Size((int)textArea.Width, (int)textArea.Height)));
         }
 
         protected override void OnResize(EventArgs e)
@@ -159,6 +178,7 @@ namespace RobertLw.Interest.CubePrimer.Controls
                 textArea = MeasureSize(gc, this.Font, Data.StepString);
                 origin = new PointF((this.ClientSize.Width - textArea.Width) / 2.0f,
                                     (this.ClientSize.Height - textArea.Height) / 2.0f);
+                stepsLocation = MeasureLocaltion(gc);
             }
 
         }
@@ -171,8 +191,8 @@ namespace RobertLw.Interest.CubePrimer.Controls
             if (string.IsNullOrEmpty(text))
                 return new SizeF(0.0f, 0.0f);
 
-            StringFormat format = new StringFormat();
-            RectangleF rect = new RectangleF(0.0f, 0.0f, 10000.0f, 1000.0f);
+            var format = new StringFormat();
+            var rect = new RectangleF(0.0f, 0.0f, 10000.0f, 1000.0f);
             CharacterRange[] ranges = { new CharacterRange(0, text.Length) };
 
             format.SetMeasurableCharacterRanges(ranges);
@@ -184,6 +204,67 @@ namespace RobertLw.Interest.CubePrimer.Controls
             return new SizeF(rect.Width, rect.Height);
         }
 
+        private RectangleF[] MeasureLocaltion(Graphics graphics)
+        {
+            if (Data.Steps == null) return null;
+
+            var rect = new RectangleF[Data.StepsCount];
+
+            for (int i = 0; i < Data.StepsCount; i++)
+            {
+                // 上一步为止的大小
+                SizeF lastSize;
+                if (i == 0)
+                {
+                    var size = MeasureSize(graphics, this.Font, Data.Steps[0]);
+                    rect[i] = new RectangleF(origin.X, origin.Y, size.Width, size.Height);
+                }
+                else
+                {
+                    // 上一步为止的步法字符串
+                    var s = Data.StepString.Substring(0, Data.StepIndexs[i]);
+                    lastSize = MeasureSize(graphics, this.Font, s);
+                    var size = MeasureSize(graphics, this.Font, Data.Steps[i]);
+                    rect[i] = new RectangleF(origin.X + lastSize.Width, origin.Y, size.Width, size.Height);
+                }
+            }
+
+            return rect;
+        }
+
         #endregion
+
+        private void StepView_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.X < origin.X || e.Y < origin.Y ||
+                e.X > origin.X + textArea.Width || e.Y > origin.Y + textArea.Height)
+            {
+                return;
+            }
+
+            var idx = Point2StepIdx(new PointF(e.X, e.Y));
+            if (idx < Data.StepsCount && idx != Data.StepNo)
+            {
+                OnMove2Event?.Invoke(sender, new Move2EventArgs(idx));
+            }
+
+        }
+
+        private int Point2StepIdx(PointF point)
+        {
+            int i = 0;
+            for (; i < stepsLocation.Length; i++)
+            {
+                if (point.X >= stepsLocation[i].Left &&
+                    point.X <= stepsLocation[i].Right &&
+                    point.Y >= stepsLocation[i].Top &&
+                    point.Y <= stepsLocation[i].Bottom)
+                {
+                    return i;
+                }
+            }
+
+            return i;
+        }
     }
 }

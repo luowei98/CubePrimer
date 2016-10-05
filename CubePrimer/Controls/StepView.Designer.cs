@@ -37,6 +37,7 @@
             this.DoubleBuffered = true;
             this.Name = "StepView";
             this.Load += new System.EventHandler(this.StepView_Load);
+            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.StepView_MouseClick);
             this.ResumeLayout(false);
 
         }

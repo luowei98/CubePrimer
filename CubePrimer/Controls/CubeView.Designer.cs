@@ -31,7 +31,6 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CubeView));
             this.tlpTop = new System.Windows.Forms.TableLayoutPanel();
-            this.aniCube = new RobertLw.Interest.CubePrimer.Controls.AniCube();
             this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.menuItemAni2Back = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemAni2Next = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,9 +46,7 @@
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.menuItemOptionAnim = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemOptionSteps = new System.Windows.Forms.ToolStripMenuItem();
-            this.planeView = new RobertLw.Interest.CubePrimer.Controls.PlaneView();
             this.tlpView = new System.Windows.Forms.TableLayoutPanel();
-            this.stepView = new RobertLw.Interest.CubePrimer.Controls.StepView();
             this.tlpAll = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.buttonBegin = new System.Windows.Forms.Button();
@@ -57,6 +54,9 @@
             this.trackBar = new System.Windows.Forms.TrackBar();
             this.buttonPrev = new System.Windows.Forms.Button();
             this.buttonNext = new System.Windows.Forms.Button();
+            this.aniCube = new RobertLw.Interest.CubePrimer.Controls.AniCube();
+            this.planeView = new RobertLw.Interest.CubePrimer.Controls.PlaneView();
+            this.stepView = new RobertLw.Interest.CubePrimer.Controls.StepView();
             this.tlpTop.SuspendLayout();
             this.contextMenu.SuspendLayout();
             this.tlpView.SuspendLayout();
@@ -81,30 +81,6 @@
             this.tlpTop.Size = new System.Drawing.Size(640, 380);
             this.tlpTop.TabIndex = 0;
             // 
-            // aniCube
-            // 
-            this.aniCube.AccumBits = ((byte)(0));
-            this.aniCube.AnimateSpeed = 5F;
-            this.aniCube.AutoCheckErrors = false;
-            this.aniCube.AutoFinish = false;
-            this.aniCube.AutoMakeCurrent = true;
-            this.aniCube.AutoSwapBuffers = true;
-            this.aniCube.BackColor = System.Drawing.Color.Black;
-            this.aniCube.ColorBits = ((byte)(32));
-            this.aniCube.ContextMenuStrip = this.contextMenu;
-            this.aniCube.ContinueFlag = CubePrimer.MOVE_DIREC.NONE;
-            this.aniCube.Data = null;
-            this.aniCube.DepthBits = ((byte)(16));
-            this.aniCube.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.aniCube.Location = new System.Drawing.Point(0, 0);
-            this.aniCube.Margin = new System.Windows.Forms.Padding(0);
-            this.aniCube.Name = "aniCube";
-            this.aniCube.Size = new System.Drawing.Size(480, 380);
-            this.aniCube.StencilBits = ((byte)(0));
-            this.aniCube.TabIndex = 0;
-            this.aniCube.TabStop = false;
-            this.aniCube.Zoom = -20F;
-            // 
             // contextMenu
             // 
             this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -123,7 +99,7 @@
             this.menuItemOptionAnim,
             this.menuItemOptionSteps});
             this.contextMenu.Name = "contextMenu";
-            this.contextMenu.Size = new System.Drawing.Size(174, 270);
+            this.contextMenu.Size = new System.Drawing.Size(174, 248);
             // 
             // menuItemAni2Back
             // 
@@ -215,19 +191,6 @@
             this.menuItemOptionSteps.Text = "设置步骤参数...";
             this.menuItemOptionSteps.Click += new System.EventHandler(this.menuItemOptionSteps_Click);
             // 
-            // planeView
-            // 
-            this.planeView.BackColor = System.Drawing.Color.Black;
-            this.planeView.ContextMenuStrip = this.contextMenu;
-            this.planeView.Data = null;
-            this.planeView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.planeView.Location = new System.Drawing.Point(480, 0);
-            this.planeView.Margin = new System.Windows.Forms.Padding(0);
-            this.planeView.Name = "planeView";
-            this.planeView.Size = new System.Drawing.Size(160, 380);
-            this.planeView.TabIndex = 0;
-            this.planeView.TabStop = false;
-            // 
             // tlpView
             // 
             this.tlpView.BackColor = System.Drawing.Color.Black;
@@ -245,27 +208,6 @@
             this.tlpView.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpView.Size = new System.Drawing.Size(640, 448);
             this.tlpView.TabIndex = 1;
-            // 
-            // stepView
-            // 
-            this.stepView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.stepView.BackColor = System.Drawing.Color.Black;
-            this.stepView.ContextMenuStrip = this.contextMenu;
-            this.stepView.Data = null;
-            this.stepView.Font = new System.Drawing.Font("Consolas", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.stepView.ForeColor = System.Drawing.Color.White;
-            this.stepView.IsContinue = false;
-            this.stepView.Location = new System.Drawing.Point(0, 380);
-            this.stepView.Margin = new System.Windows.Forms.Padding(0);
-            this.stepView.MovingColor = System.Drawing.Color.Red;
-            this.stepView.MovingFlag = CubePrimer.MOVE_DIREC.NONE;
-            this.stepView.Name = "stepView";
-            this.stepView.NextColor = System.Drawing.Color.Yellow;
-            this.stepView.Size = new System.Drawing.Size(640, 68);
-            this.stepView.TabIndex = 0;
-            this.stepView.TabStop = false;
             // 
             // tlpAll
             // 
@@ -369,6 +311,65 @@
             this.buttonNext.TabIndex = 4;
             this.buttonNext.UseVisualStyleBackColor = true;
             this.buttonNext.Click += new System.EventHandler(this.buttonNext_Click);
+            // 
+            // aniCube
+            // 
+            this.aniCube.AccumBits = ((byte)(0));
+            this.aniCube.AnimateSpeed = 5F;
+            this.aniCube.AutoCheckErrors = false;
+            this.aniCube.AutoFinish = false;
+            this.aniCube.AutoMakeCurrent = true;
+            this.aniCube.AutoSwapBuffers = true;
+            this.aniCube.BackColor = System.Drawing.Color.Black;
+            this.aniCube.ColorBits = ((byte)(32));
+            this.aniCube.ContextMenuStrip = this.contextMenu;
+            this.aniCube.ContinueFlag = RobertLw.Interest.CubePrimer.MOVE_DIREC.NONE;
+            this.aniCube.Data = null;
+            this.aniCube.DepthBits = ((byte)(16));
+            this.aniCube.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.aniCube.Location = new System.Drawing.Point(0, 0);
+            this.aniCube.Margin = new System.Windows.Forms.Padding(0);
+            this.aniCube.Name = "aniCube";
+            this.aniCube.Size = new System.Drawing.Size(480, 380);
+            this.aniCube.StencilBits = ((byte)(0));
+            this.aniCube.TabIndex = 0;
+            this.aniCube.TabStop = false;
+            this.aniCube.Zoom = -20F;
+            // 
+            // planeView
+            // 
+            this.planeView.BackColor = System.Drawing.Color.Black;
+            this.planeView.ContextMenuStrip = this.contextMenu;
+            this.planeView.Data = null;
+            this.planeView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.planeView.Location = new System.Drawing.Point(480, 0);
+            this.planeView.Margin = new System.Windows.Forms.Padding(0);
+            this.planeView.Name = "planeView";
+            this.planeView.Size = new System.Drawing.Size(160, 380);
+            this.planeView.TabIndex = 0;
+            this.planeView.TabStop = false;
+            // 
+            // stepView
+            // 
+            this.stepView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.stepView.BackColor = System.Drawing.Color.Black;
+            this.stepView.ContextMenuStrip = this.contextMenu;
+            this.stepView.Data = null;
+            this.stepView.Font = new System.Drawing.Font("Consolas", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.stepView.ForeColor = System.Drawing.Color.White;
+            this.stepView.IsContinue = false;
+            this.stepView.Location = new System.Drawing.Point(0, 380);
+            this.stepView.Margin = new System.Windows.Forms.Padding(0);
+            this.stepView.MovingColor = System.Drawing.Color.Red;
+            this.stepView.MovingFlag = RobertLw.Interest.CubePrimer.MOVE_DIREC.NONE;
+            this.stepView.Name = "stepView";
+            this.stepView.NextColor = System.Drawing.Color.Yellow;
+            this.stepView.Size = new System.Drawing.Size(640, 68);
+            this.stepView.TabIndex = 0;
+            this.stepView.TabStop = false;
+            this.stepView.OnMove2Event += new RobertLw.Interest.CubePrimer.Controls.StepView.Move2Event(this.stepView_OnMove2Event);
             // 
             // CubeView
             // 
