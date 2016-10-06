@@ -171,6 +171,33 @@ namespace RobertLw.Interest.CubePrimer.Controls
             MovingFlag = MOVE_DIREC.NONE;
         }
 
+        private void StepView_MouseClick(object sender, MouseEventArgs e)
+        {
+            var idx = Point2StepIdx(new PointF(e.X, e.Y));
+            if (idx < Data.StepsCount && idx != Data.StepNo)
+            {
+                OnMove2Event?.Invoke(sender, new Move2EventArgs(idx));
+            }
+        }
+
+        private void StepView_MouseMove(object sender, MouseEventArgs e)
+        {
+            var idx = Point2StepIdx(new PointF(e.X, e.Y));
+            if (idx < Data.StepsCount && idx != Data.StepNo)
+            {
+                if (idx != hoverIdx)
+                {
+                    hoverIdx = idx;
+                    this.Refresh();
+                }
+            }
+            else
+            {
+                hoverIdx = -1;
+                this.Refresh();
+            }
+        }
+
         #endregion
 
         #region public methods
@@ -250,17 +277,6 @@ namespace RobertLw.Interest.CubePrimer.Controls
             return rect;
         }
 
-        #endregion
-
-        private void StepView_MouseClick(object sender, MouseEventArgs e)
-        {
-            var idx = Point2StepIdx(new PointF(e.X, e.Y));
-            if (idx < Data.StepsCount && idx != Data.StepNo)
-            {
-                OnMove2Event?.Invoke(sender, new Move2EventArgs(idx));
-            }
-        }
-
         private int Point2StepIdx(PointF point)
         {
             if (point.X < origin.X || point.Y < origin.Y ||
@@ -284,24 +300,6 @@ namespace RobertLw.Interest.CubePrimer.Controls
             return i;
         }
 
-        private void StepView_MouseMove(object sender, MouseEventArgs e)
-        {
-            var idx = Point2StepIdx(new PointF(e.X, e.Y));
-            if (idx < Data.StepsCount && idx != Data.StepNo)
-            {
-                if (idx != hoverIdx)
-                {
-                    hoverIdx = idx;
-                    this.Refresh();
-                }
-            }
-            else
-            {
-                hoverIdx = -1;
-                this.Refresh();
-            }
-        }
-
         private string BuildPaintStep(string steps, int idx, int len)
         {
             var s1 = steps.Substring(0, idx);
@@ -309,5 +307,7 @@ namespace RobertLw.Interest.CubePrimer.Controls
 
             return s1 + "".PadRight(len) + s2;
         }
+
+        #endregion
     }
 }

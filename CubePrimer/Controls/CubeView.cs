@@ -296,6 +296,13 @@ namespace RobertLw.Interest.CubePrimer.Controls
         {
             OnOptionSteps?.Invoke(this, new EventArgs());
         }
+        private void stepView_OnMove2Event(object sender, StepView.Move2EventArgs e)
+        {
+            if (e.Move2StepIdx > cubeData.StepNo)
+                while (cubeData.StepNo < e.Move2StepIdx) this.Set2Next();
+            else if (e.Move2StepIdx < cubeData.StepNo)
+                while (cubeData.StepNo > e.Move2StepIdx) this.Set2Back();
+        }
 
         #endregion
 
@@ -483,12 +490,5 @@ namespace RobertLw.Interest.CubePrimer.Controls
 
         #endregion
 
-        private void stepView_OnMove2Event(object sender, StepView.Move2EventArgs e)
-        {
-            if (e.Move2StepIdx > cubeData.StepNo)
-                while (cubeData.StepNo < e.Move2StepIdx) this.Set2Next();
-            else if (e.Move2StepIdx < cubeData.StepNo)
-                while (cubeData.StepNo > e.Move2StepIdx) this.Set2Back();
-        }
     }
 }
