@@ -309,5 +309,16 @@ namespace RobertLw.Interest.CubePrimer.Properties {
                 this["FirstRun"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Drawing.Color HoverColor {
+            get {
+                return ((global::System.Drawing.Color)(this["HoverColor"]));
+            }
+            set {
+                this["HoverColor"] = value;
+            }
+        }
     }
 }

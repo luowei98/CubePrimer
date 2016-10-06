@@ -603,6 +603,8 @@ namespace RobertLw.Interest.CubePrimer
                 cubeView.StepsCurrColor = Settings.Default.StepsCurrColor;
             if (!Settings.Default.StepsNextColor.IsEmpty)
                 cubeView.StepsNextColor = Settings.Default.StepsNextColor;
+            if (!Settings.Default.HoverColor.IsEmpty)
+                cubeView.HoverColor = Settings.Default.HoverColor;
         }
 
         private void SaveStepsSetting()
@@ -614,6 +616,7 @@ namespace RobertLw.Interest.CubePrimer
             Settings.Default.StepsColor = cubeView.StepsColor;
             Settings.Default.StepsCurrColor = cubeView.StepsCurrColor;
             Settings.Default.StepsNextColor = cubeView.StepsNextColor;
+            Settings.Default.HoverColor = cubeView.HoverColor;
 
         }
 

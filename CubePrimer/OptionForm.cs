@@ -132,7 +132,7 @@ namespace RobertLw.Interest.CubePrimer
             if (fontDialog.ShowDialog() == DialogResult.OK)
             {
                 Font ft = new Font(fontDialog.Font.FontFamily, labelSample.Font.Size);
-                labelSample.Font = labelCurrSample.Font = labelNextSample.Font = ft;
+                labelSample.Font = labelCurrSample.Font = labelNextSample.Font = labelHoverSample.Font = ft;
                 cubeView.StepsFontFamily = fontDialog.Font.FontFamily;
             }
         }
@@ -159,6 +159,14 @@ namespace RobertLw.Interest.CubePrimer
 
             if (colorDialog.ShowDialog() == DialogResult.OK)
                 cubeView.StepsNextColor = labelNextSample.ForeColor = colorDialog.Color;
+        }
+
+        private void buttonHoverColor_Click(object sender, EventArgs e)
+        {
+            ColorDialog colorDialog = GetColorDialog(labelHoverSample.ForeColor);
+
+            if (colorDialog.ShowDialog() == DialogResult.OK)
+                cubeView.HoverColor = labelHoverSample.ForeColor = colorDialog.Color;
         }
 
         private void listViewKeys_SelectedIndexChanged(object sender, EventArgs e)
@@ -240,11 +248,12 @@ namespace RobertLw.Interest.CubePrimer
             checkBoxStep.Checked = cubeView.ShowSteps;
 
             Font ft = new Font(cubeView.StepsFontFamily, labelSample.Font.Size);
-            labelSample.Font = labelCurrSample.Font = labelNextSample.Font = ft;
+            labelSample.Font = labelCurrSample.Font = labelNextSample.Font = labelHoverSample.Font = ft;
 
             labelSample.ForeColor = cubeView.StepsColor;
             labelCurrSample.ForeColor = cubeView.StepsCurrColor;
             labelNextSample.ForeColor = cubeView.StepsNextColor;
+            labelHoverSample.ForeColor = cubeView.HoverColor;
         }
 
         private void LoadStcOption()
@@ -332,5 +341,6 @@ namespace RobertLw.Interest.CubePrimer
         }
 
         #endregion
+
     }
 }

@@ -109,6 +109,16 @@ namespace RobertLw.Interest.CubePrimer.Controls
             }
         }
 
+        public Color HoverColor
+        {
+            get { return stepView.HoverColor; }
+            set
+            {
+                stepView.HoverColor = value;
+                stepView.Refresh();
+            }
+        }
+
         public ContextMenuStrip TopContextMenuStrip => aniCube.ContextMenuStrip;
 
         #endregion

@@ -28,12 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("动画参数");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("步骤参数");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("动画画面设置", new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2});
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("快捷键");
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("动画参数");
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("步骤参数");
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("动画画面设置", new System.Windows.Forms.TreeNode[] {
+            treeNode5,
+            treeNode6});
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("快捷键");
             this.panelAnim = new System.Windows.Forms.Panel();
             this.numericZoom = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
@@ -51,6 +51,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.panelSteps = new System.Windows.Forms.Panel();
             this.panelStepSub = new System.Windows.Forms.Panel();
+            this.buttonHoverColor = new System.Windows.Forms.Button();
+            this.labelHoverSample = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.labelSample = new System.Windows.Forms.Label();
             this.checkBoxMerge = new System.Windows.Forms.CheckBox();
@@ -65,17 +68,17 @@
             this.checkBoxStep = new System.Windows.Forms.CheckBox();
             this.fontDialog = new System.Windows.Forms.FontDialog();
             this.panelShortcuts = new System.Windows.Forms.Panel();
+            this.buttonClear = new System.Windows.Forms.Button();
             this.buttonApply = new System.Windows.Forms.Button();
             this.textBoxKeys = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.buttonClear = new System.Windows.Forms.Button();
-            this.listViewKeys = new Controls.ListViewEx();
+            this.listViewKeys = new RobertLw.Interest.CubePrimer.Controls.ListViewEx();
             this.columnHeaderMethod = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderKey = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderKeyAcc = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.treeView = new Controls.TreeViewEx();
+            this.treeView = new RobertLw.Interest.CubePrimer.Controls.TreeViewEx();
             this.panelAnim.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericZoom)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -305,6 +308,9 @@
             // 
             // panelStepSub
             // 
+            this.panelStepSub.Controls.Add(this.buttonHoverColor);
+            this.panelStepSub.Controls.Add(this.labelHoverSample);
+            this.panelStepSub.Controls.Add(this.label9);
             this.panelStepSub.Controls.Add(this.label3);
             this.panelStepSub.Controls.Add(this.labelSample);
             this.panelStepSub.Controls.Add(this.checkBoxMerge);
@@ -321,6 +327,37 @@
             this.panelStepSub.Name = "panelStepSub";
             this.panelStepSub.Size = new System.Drawing.Size(434, 355);
             this.panelStepSub.TabIndex = 13;
+            // 
+            // buttonHoverColor
+            // 
+            this.buttonHoverColor.Location = new System.Drawing.Point(313, 212);
+            this.buttonHoverColor.Name = "buttonHoverColor";
+            this.buttonHoverColor.Size = new System.Drawing.Size(89, 23);
+            this.buttonHoverColor.TabIndex = 14;
+            this.buttonHoverColor.Text = "鼠标覆盖颜色";
+            this.buttonHoverColor.UseVisualStyleBackColor = true;
+            this.buttonHoverColor.Click += new System.EventHandler(this.buttonHoverColor_Click);
+            // 
+            // labelHoverSample
+            // 
+            this.labelHoverSample.BackColor = System.Drawing.Color.Black;
+            this.labelHoverSample.Font = new System.Drawing.Font("Consolas", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelHoverSample.ForeColor = System.Drawing.Color.White;
+            this.labelHoverSample.Location = new System.Drawing.Point(207, 141);
+            this.labelHoverSample.Name = "labelHoverSample";
+            this.labelHoverSample.Size = new System.Drawing.Size(60, 50);
+            this.labelHoverSample.TabIndex = 13;
+            this.labelHoverSample.Text = "F";
+            this.labelHoverSample.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(205, 124);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(68, 17);
+            this.label9.TabIndex = 12;
+            this.label9.Text = "鼠标覆盖：";
             // 
             // label3
             // 
@@ -358,7 +395,7 @@
             // 
             this.buttonStepColor.Location = new System.Drawing.Point(313, 89);
             this.buttonStepColor.Name = "buttonStepColor";
-            this.buttonStepColor.Size = new System.Drawing.Size(80, 23);
+            this.buttonStepColor.Size = new System.Drawing.Size(89, 23);
             this.buttonStepColor.TabIndex = 3;
             this.buttonStepColor.Text = "字体颜色";
             this.buttonStepColor.UseVisualStyleBackColor = true;
@@ -368,7 +405,7 @@
             // 
             this.buttonCurrStepColor.Location = new System.Drawing.Point(313, 130);
             this.buttonCurrStepColor.Name = "buttonCurrStepColor";
-            this.buttonCurrStepColor.Size = new System.Drawing.Size(80, 23);
+            this.buttonCurrStepColor.Size = new System.Drawing.Size(89, 23);
             this.buttonCurrStepColor.TabIndex = 10;
             this.buttonCurrStepColor.Text = "当前步颜色";
             this.buttonCurrStepColor.UseVisualStyleBackColor = true;
@@ -378,7 +415,7 @@
             // 
             this.buttonFont.Location = new System.Drawing.Point(313, 48);
             this.buttonFont.Name = "buttonFont";
-            this.buttonFont.Size = new System.Drawing.Size(80, 23);
+            this.buttonFont.Size = new System.Drawing.Size(89, 23);
             this.buttonFont.TabIndex = 4;
             this.buttonFont.Text = "选择字体";
             this.buttonFont.UseVisualStyleBackColor = true;
@@ -388,7 +425,7 @@
             // 
             this.buttonNextStepColor.Location = new System.Drawing.Point(313, 171);
             this.buttonNextStepColor.Name = "buttonNextStepColor";
-            this.buttonNextStepColor.Size = new System.Drawing.Size(80, 23);
+            this.buttonNextStepColor.Size = new System.Drawing.Size(89, 23);
             this.buttonNextStepColor.TabIndex = 9;
             this.buttonNextStepColor.Text = "下一步颜色";
             this.buttonNextStepColor.UseVisualStyleBackColor = true;
@@ -399,18 +436,18 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(25, 124);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(92, 17);
+            this.label6.Size = new System.Drawing.Size(68, 17);
             this.label6.TabIndex = 5;
-            this.label6.Text = "当前步骤样例：";
+            this.label6.Text = "当前步骤：";
             // 
             // labelNextSample
             // 
             this.labelNextSample.BackColor = System.Drawing.Color.Black;
             this.labelNextSample.Font = new System.Drawing.Font("Consolas", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelNextSample.ForeColor = System.Drawing.Color.White;
-            this.labelNextSample.Location = new System.Drawing.Point(175, 141);
+            this.labelNextSample.Location = new System.Drawing.Point(117, 141);
             this.labelNextSample.Name = "labelNextSample";
-            this.labelNextSample.Size = new System.Drawing.Size(92, 80);
+            this.labelNextSample.Size = new System.Drawing.Size(60, 50);
             this.labelNextSample.TabIndex = 8;
             this.labelNextSample.Text = "U";
             this.labelNextSample.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -420,9 +457,9 @@
             this.labelCurrSample.BackColor = System.Drawing.Color.Black;
             this.labelCurrSample.Font = new System.Drawing.Font("Consolas", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelCurrSample.ForeColor = System.Drawing.Color.White;
-            this.labelCurrSample.Location = new System.Drawing.Point(26, 141);
+            this.labelCurrSample.Location = new System.Drawing.Point(27, 141);
             this.labelCurrSample.Name = "labelCurrSample";
-            this.labelCurrSample.Size = new System.Drawing.Size(92, 80);
+            this.labelCurrSample.Size = new System.Drawing.Size(60, 50);
             this.labelCurrSample.TabIndex = 6;
             this.labelCurrSample.Text = "R";
             this.labelCurrSample.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -430,11 +467,11 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(174, 124);
+            this.label8.Location = new System.Drawing.Point(115, 124);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(92, 17);
+            this.label8.Size = new System.Drawing.Size(68, 17);
             this.label8.TabIndex = 7;
-            this.label8.Text = "下一步骤样例：";
+            this.label8.Text = "下一步骤：";
             // 
             // checkBoxStep
             // 
@@ -467,6 +504,16 @@
             this.panelShortcuts.Name = "panelShortcuts";
             this.panelShortcuts.Size = new System.Drawing.Size(434, 422);
             this.panelShortcuts.TabIndex = 8;
+            // 
+            // buttonClear
+            // 
+            this.buttonClear.Location = new System.Drawing.Point(250, 335);
+            this.buttonClear.Name = "buttonClear";
+            this.buttonClear.Size = new System.Drawing.Size(75, 23);
+            this.buttonClear.TabIndex = 5;
+            this.buttonClear.Text = "清除";
+            this.buttonClear.UseVisualStyleBackColor = true;
+            this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
             // 
             // buttonApply
             // 
@@ -503,16 +550,6 @@
             this.label4.Size = new System.Drawing.Size(80, 17);
             this.label4.TabIndex = 1;
             this.label4.Text = "快捷键设置：";
-            // 
-            // buttonClear
-            // 
-            this.buttonClear.Location = new System.Drawing.Point(250, 335);
-            this.buttonClear.Name = "buttonClear";
-            this.buttonClear.Size = new System.Drawing.Size(75, 23);
-            this.buttonClear.TabIndex = 5;
-            this.buttonClear.Text = "清除";
-            this.buttonClear.UseVisualStyleBackColor = true;
-            this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
             // 
             // listViewKeys
             // 
@@ -556,17 +593,17 @@
             this.treeView.HideSelection = false;
             this.treeView.Location = new System.Drawing.Point(0, 0);
             this.treeView.Name = "treeView";
-            treeNode1.Name = "nodeAnim";
-            treeNode1.Text = "动画参数";
-            treeNode2.Name = "nodeSteps";
-            treeNode2.Text = "步骤参数";
-            treeNode3.Name = "nodeView";
-            treeNode3.Text = "动画画面设置";
-            treeNode4.Name = "nodeShortcuts";
-            treeNode4.Text = "快捷键";
+            treeNode5.Name = "nodeAnim";
+            treeNode5.Text = "动画参数";
+            treeNode6.Name = "nodeSteps";
+            treeNode6.Text = "步骤参数";
+            treeNode7.Name = "nodeView";
+            treeNode7.Text = "动画画面设置";
+            treeNode8.Name = "nodeShortcuts";
+            treeNode8.Text = "快捷键";
             this.treeView.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode3,
-            treeNode4});
+            treeNode7,
+            treeNode8});
             this.treeView.Size = new System.Drawing.Size(200, 422);
             this.treeView.TabIndex = 0;
             this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView_AfterSelect);
@@ -576,8 +613,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(634, 422);
-            this.Controls.Add(this.panelShortcuts);
             this.Controls.Add(this.panelSteps);
+            this.Controls.Add(this.panelShortcuts);
             this.Controls.Add(this.panelAnim);
             this.Controls.Add(this.treeView);
             this.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
@@ -649,5 +686,8 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ColumnHeader columnHeaderType;
         private System.Windows.Forms.Button buttonClear;
+        private System.Windows.Forms.Button buttonHoverColor;
+        private System.Windows.Forms.Label labelHoverSample;
+        private System.Windows.Forms.Label label9;
     }
 }

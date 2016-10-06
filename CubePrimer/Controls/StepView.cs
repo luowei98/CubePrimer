@@ -96,7 +96,7 @@ namespace RobertLw.Interest.CubePrimer.Controls
             InitializeComponent();
             MovingColor = Color.Red;
             NextColor = Color.Yellow;
-            HoverColor = Color.LightSeaGreen;
+            HoverColor = Color.Aqua;
         }
 
         #endregion
