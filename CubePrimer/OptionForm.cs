@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using RobertLw.Interest.CubePrimer.Controls;
 using RobertLw.Interest.CubePrimer.Data;
@@ -71,8 +68,6 @@ namespace RobertLw.Interest.CubePrimer
                     panelShortcuts.Dock = DockStyle.Fill;
                     panelShortcuts.BringToFront();
                     LoadStcOption();
-                    break;
-                default:
                     break;
             }
         }
@@ -333,7 +328,7 @@ namespace RobertLw.Interest.CubePrimer
             else
             {
                 int i = (c.B << 16) | (c.G << 8) | c.R;
-                cd.CustomColors = new int[] { i };
+                cd.CustomColors = new[] { i };
                 cd.FullOpen = true;
             }
 
