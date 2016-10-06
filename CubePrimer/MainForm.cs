@@ -31,13 +31,13 @@ namespace RobertLw.Interest.CubePrimer
 
         private OptionForm optionForm;
 
-        private class CmbItem
+        private class LibItem
         {
             public string Text { get; set; }
             public List<List<string>> Value { get; set; }
             public bool ImgLoaded { get; set; }
 
-            public CmbItem(string t)
+            public LibItem(string t)
             {
                 Text = t;
                 Value = new List<List<string>>();
@@ -50,9 +50,9 @@ namespace RobertLw.Interest.CubePrimer
             }
         }
 
-        private List<CmbItem> currentStepSet;
-        private int currentSubSet = -1;
-        private int menuLibIdx = 1;
+        private List<LibItem> currentLib;
+        private int currSubLibIdx = -1;
+        private int menuSubLibIdx = 1;
 
         #endregion
 
@@ -193,10 +193,7 @@ namespace RobertLw.Interest.CubePrimer
                 }
 
                 // reload ani & flv
-                // todo deletel
-                //int selIdx = (int)Settings.Default.ListSelectedIndex[comboContents.SelectedIndex];
-                ////
-                int selIdx = (int)Settings.Default.ListSelectedIndex[currentSubSet];
+                int selIdx = (int)Settings.Default.ListSelectedIndex[currSubLibIdx];
                 listView.Items[0].Selected = true;
                 if (listView.Items.Count > selIdx)
                     listView.Items[selIdx].Selected = true;
@@ -243,7 +240,7 @@ namespace RobertLw.Interest.CubePrimer
         private void menuItemSubLib_Click(object sender, EventArgs e)
         {
             setCurrentLibIdx((int) ((ToolStripMenuItem) sender).Tag);
-            LoadSubStepSet(currentStepSet[currentSubSet]);
+            LoadSubLib(currentLib[currSubLibIdx]);
         }
 
         private void comboContents_SelectedIndexChanged(object sender, EventArgs e)
@@ -251,10 +248,7 @@ namespace RobertLw.Interest.CubePrimer
             this.Cursor = Cursors.WaitCursor;
             statusLabel.Text = "载入手法库";
 
-            // todo delete
-            //LoadSubStepSet((CmbItem) comboContents.SelectedItem);
-            ////
-            LoadSubStepSet(currentStepSet[currentSubSet]);
+            LoadSubLib(currentLib[currSubLibIdx]);
 
             this.Cursor = Cursors.Default;
             statusLabel.Text = "";
@@ -304,10 +298,7 @@ namespace RobertLw.Interest.CubePrimer
                 }
 
                 // 保存选择位置
-                // todo delete
-                //Settings.Default.ListSelectedIndex[comboContents.SelectedIndex] = e.ItemIndex;
-                ////
-                Settings.Default.ListSelectedIndex[currentSubSet] = e.ItemIndex;
+                Settings.Default.ListSelectedIndex[currSubLibIdx] = e.ItemIndex;
             }
         }
 
@@ -414,67 +405,40 @@ namespace RobertLw.Interest.CubePrimer
 
             fileDir = Path.GetDirectoryName(file);
 
-            //// calc file line, set process form, open it
-            ////int lines = File.ReadAllLines(file).Length;
-            //int lines = 0;
-            //using (TextReader reader = File.OpenText(file))
-            //{
-            //    while (reader.ReadLine() != null) { lines++; }
-            //}
-            // todo delete
-            //comboContents.Items.Clear();
-            ////
-            if (currentStepSet == null)
-                currentStepSet = new List<CmbItem>();
+            if (currentLib == null)
+                currentLib = new List<LibItem>();
             else
-                currentStepSet.Clear();
+                currentLib.Clear();
 
-            int i = menuLibIdx;
+            int i = menuSubLibIdx;
             foreach (var l in LineReader(file))
             {
                 if (char.IsWhiteSpace(l, 0))
                 {
-                    // todo delete
-                    //if (comboContents.Items.Count != 0)
-                    //{
-                    //    CmbItem v = (CmbItem) comboContents.Items[comboContents.Items.Count - 1];
-                    //    v.Value.Add(new List<string>(l.Split(',')));
-                    //}
-                    ////
-                    if (currentStepSet.Count != 0)
+                    if (currentLib.Count != 0)
                     {
-                        CmbItem v = currentStepSet.Last();
+                        LibItem v = currentLib.Last();
                         v.Value.Add(new List<string>(l.Split(',')));
                     }
                 }
                 else
                 {
-                    // todo delete
-                    //comboContents.Items.Add(new CmbItem(l));
-                    ////
-                    currentStepSet.Add(new CmbItem(l));
+                    currentLib.Add(new LibItem(l));
                     var mnu = new ToolStripMenuItem(l);
-                    mnu.Tag = i - menuLibIdx;
+                    mnu.Tag = i - menuSubLibIdx;
                     mnu.Click += menuItemSubLib_Click;
                     menu.Items.Insert(i++, mnu);
                 }
             }
 
             // 设置子库选择
-            // todo deltel
-            //if (!isInit ||
-            //    Settings.Default.ListSelectedIndex == null ||
-            //    Settings.Default.ListSelectedIndex.Count != comboContents.Items.Count)
-            //    Settings.Default.ListSelectedIndex = new ArrayList(new int[comboContents.Items.Count]);
-            //comboContents.SelectedIndex = comboContents.Items.Count > subLib ? subLib : 0;
-            ////
             if (!isInit ||
                 Settings.Default.ListSelectedIndex == null ||
-                Settings.Default.ListSelectedIndex.Count != currentStepSet.Count)
-                Settings.Default.ListSelectedIndex = new ArrayList(new int[currentStepSet.Count]);
+                Settings.Default.ListSelectedIndex.Count != currentLib.Count)
+                Settings.Default.ListSelectedIndex = new ArrayList(new int[currentLib.Count]);
             
-            setCurrentLibIdx(currentStepSet.Count > subLib ? subLib : 0);
-            LoadSubStepSet(currentStepSet[currentSubSet]);
+            setCurrentLibIdx(currentLib.Count > subLib ? subLib : 0);
+            LoadSubLib(currentLib[currSubLibIdx]);
             
             return true;
         }
@@ -490,18 +454,15 @@ namespace RobertLw.Interest.CubePrimer
             }
         }
 
-        private void LoadSubStepSet(CmbItem setpSet)
+        private void LoadSubLib(LibItem item)
         {
             string fn;
 
-            if (!setpSet.ImgLoaded)
+            if (!item.ImgLoaded)
             {
-                foreach (var ss in setpSet.Value)
+                foreach (var ss in item.Value)
                 {
-                    // todo delete
-                    //fn = comboContents.Text + Path.DirectorySeparatorChar + ss[0].Trim();
-                    ////
-                    fn = setpSet.ToString() + Path.DirectorySeparatorChar + ss[0].Trim();
+                    fn = item.ToString() + Path.DirectorySeparatorChar + ss[0].Trim();
                     try
                     {
                         Image img = new Bitmap(fileDir + Path.DirectorySeparatorChar + fn + ".png");
@@ -512,7 +473,7 @@ namespace RobertLw.Interest.CubePrimer
                         // ignored
                     }
                 }
-                setpSet.ImgLoaded = true;
+                item.ImgLoaded = true;
             }
 
             listView.BeginUpdate();
@@ -520,19 +481,16 @@ namespace RobertLw.Interest.CubePrimer
             listView.Items.Clear();
 
             // 设置组
-            List<string> grpkey = setpSet.Value.Select(ss => ss.Count >= 4 ? ss[3] : "未分组").ToList();
+            List<string> grpkey = item.Value.Select(ss => ss.Count >= 4 ? ss[3] : "未分组").ToList();
 
             grpkey.Sort();
             foreach (var g in grpkey.Distinct())
                 listView.Groups.Add(g, g);
 
             // 添加显示项目
-            foreach (var ss in setpSet.Value)
+            foreach (var ss in item.Value)
             {
-                // todo delete
-                //fn = comboContents.Text + Path.DirectorySeparatorChar + ss[0].Trim();
-                ////
-                fn = setpSet.ToString() + Path.DirectorySeparatorChar + ss[0].Trim();
+                fn = item.ToString() + Path.DirectorySeparatorChar + ss[0].Trim();
                 string txt = imageList.Images.IndexOfKey(fn) != -1 ? fn : "cube";
                 string grp = ss.Count >= 4 ? ss[3] : "未分组";
 
@@ -548,16 +506,10 @@ namespace RobertLw.Interest.CubePrimer
             }
             listView.EndUpdate();
 
-            // todo delete
-            //Settings.Default.ContentsIndex = comboContents.SelectedIndex;
-            ////
-            Settings.Default.ContentsIndex = currentSubSet;
+            Settings.Default.ContentsIndex = currSubLibIdx;
 
             // 设置左侧项目选择
-            // todo delete
-            //int selIdx = (int)Settings.Default.ListSelectedIndex[comboContents.SelectedIndex];
-            ////
-            int selIdx = (int)Settings.Default.ListSelectedIndex[currentSubSet];
+            int selIdx = (int)Settings.Default.ListSelectedIndex[currSubLibIdx];
             listView.ExpandCollapseGroup(listView.Items[selIdx].Group);
             listView.EnsureVisible(selIdx);
             listView.Items[selIdx].Selected = true;
@@ -565,20 +517,20 @@ namespace RobertLw.Interest.CubePrimer
 
         private void setCurrentLibIdx(int idx)
         {
-            for (int i = 0; i < currentStepSet.Count; i++)
+            for (int i = 0; i < currentLib.Count; i++)
             {
                 if (i != idx)
                 {
-                    menu.Items[i + menuLibIdx].ForeColor = SystemColors.ControlText;
-                    menu.Items[i + menuLibIdx].BackColor = SystemColors.Control;
+                    menu.Items[i + menuSubLibIdx].ForeColor = SystemColors.ControlText;
+                    menu.Items[i + menuSubLibIdx].BackColor = SystemColors.Control;
                 }
                 else
                 {
-                    menu.Items[i + menuLibIdx].ForeColor = Color.White;
-                    menu.Items[i + menuLibIdx].BackColor = Color.DodgerBlue;
+                    menu.Items[i + menuSubLibIdx].ForeColor = Color.White;
+                    menu.Items[i + menuSubLibIdx].BackColor = Color.DodgerBlue;
                 }
             }
-            currentSubSet = idx;
+            currSubLibIdx = idx;
         }
 
         private void SetLoadedMenu()
@@ -828,17 +780,14 @@ namespace RobertLw.Interest.CubePrimer
 
         private string GetSelectedNo()
         {
-            // todo delete
-            //CmbItem cmbItem = (CmbItem)comboContents.SelectedItem;
-            ////
-            CmbItem cmbItem = currentStepSet[currentSubSet];
-            if (cmbItem == null) return "";
+            LibItem libItem = currentLib[currSubLibIdx];
+            if (libItem == null) return "";
 
             ListView.SelectedListViewItemCollection lsvItems = listView.SelectedItems;
             if (lsvItems.Count == 0) return "";
 
             string[] tag = (string[])lsvItems[0].Tag;
-            return $"{cmbItem}{tag[0].Trim()}";
+            return $"{libItem}{tag[0].Trim()}";
         }
 
         private void ExeMethod(Control obj, string methodName)
