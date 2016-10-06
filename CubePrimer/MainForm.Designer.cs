@@ -38,7 +38,6 @@
             this.menuItemHistory = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemClearHistroy = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.comboContents = new System.Windows.Forms.ToolStripComboBox();
             this.menuItemOption = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemAnim = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemSteps = new System.Windows.Forms.ToolStripMenuItem();
@@ -70,11 +69,10 @@
             // 
             this.menu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuItemFile,
-            this.comboContents,
             this.menuItemOption});
             this.menu.Location = new System.Drawing.Point(0, 0);
             this.menu.Name = "menu";
-            this.menu.Size = new System.Drawing.Size(784, 29);
+            this.menu.Size = new System.Drawing.Size(784, 25);
             this.menu.TabIndex = 3;
             // 
             // menuItemFile
@@ -85,7 +83,7 @@
             this.toolStripSeparator1,
             this.menuItemHistory});
             this.menuItemFile.Name = "menuItemFile";
-            this.menuItemFile.Size = new System.Drawing.Size(70, 25);
+            this.menuItemFile.Size = new System.Drawing.Size(70, 21);
             this.menuItemFile.Text = "手法库(&F)";
             // 
             // menuItemLoad
@@ -129,14 +127,6 @@
             this.toolStripSeparator.Name = "toolStripSeparator";
             this.toolStripSeparator.Size = new System.Drawing.Size(145, 6);
             // 
-            // comboContents
-            // 
-            this.comboContents.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboContents.FlatStyle = System.Windows.Forms.FlatStyle.Standard;
-            this.comboContents.Name = "comboContents";
-            this.comboContents.Size = new System.Drawing.Size(121, 25);
-            this.comboContents.SelectedIndexChanged += new System.EventHandler(this.comboContents_SelectedIndexChanged);
-            // 
             // menuItemOption
             // 
             this.menuItemOption.BackColor = System.Drawing.SystemColors.Control;
@@ -146,7 +136,7 @@
             this.toolStripSeparator2,
             this.menuItemShortcuts});
             this.menuItemOption.Name = "menuItemOption";
-            this.menuItemOption.Size = new System.Drawing.Size(62, 25);
+            this.menuItemOption.Size = new System.Drawing.Size(62, 21);
             this.menuItemOption.Text = "设置(&O)";
             // 
             // menuItemAnim
@@ -357,7 +347,6 @@
         private System.Windows.Forms.ToolStripMenuItem menuItemFile;
         private System.Windows.Forms.ToolStripMenuItem menuItemLoad;
         private System.Windows.Forms.ImageList imageList;
-        private System.Windows.Forms.ToolStripComboBox comboContents;
         private Controls.ListViewEx listView;
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tabPage1;

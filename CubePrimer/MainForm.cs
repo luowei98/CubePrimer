@@ -52,6 +52,7 @@ namespace RobertLw.Interest.CubePrimer
 
         private List<CmbItem> currentStepSet;
         private int currentSubSet = -1;
+        private int menuLibIdx = 1;
 
         #endregion
 
@@ -239,6 +240,12 @@ namespace RobertLw.Interest.CubePrimer
 
         }
 
+        private void menuItemSubLib_Click(object sender, EventArgs e)
+        {
+            setCurrentLibIdx((int) ((ToolStripMenuItem) sender).Tag);
+            LoadSubStepSet(currentStepSet[currentSubSet]);
+        }
+
         private void comboContents_SelectedIndexChanged(object sender, EventArgs e)
         {
             this.Cursor = Cursors.WaitCursor;
@@ -422,12 +429,9 @@ namespace RobertLw.Interest.CubePrimer
             else
                 currentStepSet.Clear();
 
-            //int i = 0;
+            int i = menuLibIdx;
             foreach (var l in LineReader(file))
             {
-                //i++;
-                //// set process form
-
                 if (char.IsWhiteSpace(l, 0))
                 {
                     // todo delete
@@ -450,7 +454,9 @@ namespace RobertLw.Interest.CubePrimer
                     ////
                     currentStepSet.Add(new CmbItem(l));
                     var mnu = new ToolStripMenuItem(l);
-                    menu.Items.Insert(1, mnu);
+                    mnu.Tag = i - menuLibIdx;
+                    mnu.Click += menuItemSubLib_Click;
+                    menu.Items.Insert(i++, mnu);
                 }
             }
 
@@ -467,10 +473,9 @@ namespace RobertLw.Interest.CubePrimer
                 Settings.Default.ListSelectedIndex.Count != currentStepSet.Count)
                 Settings.Default.ListSelectedIndex = new ArrayList(new int[currentStepSet.Count]);
             
-            currentSubSet = currentStepSet.Count > subLib ? subLib : 0;
+            setCurrentLibIdx(currentStepSet.Count > subLib ? subLib : 0);
             LoadSubStepSet(currentStepSet[currentSubSet]);
             
-
             return true;
         }
 
@@ -556,6 +561,24 @@ namespace RobertLw.Interest.CubePrimer
             listView.ExpandCollapseGroup(listView.Items[selIdx].Group);
             listView.EnsureVisible(selIdx);
             listView.Items[selIdx].Selected = true;
+        }
+
+        private void setCurrentLibIdx(int idx)
+        {
+            for (int i = 0; i < currentStepSet.Count; i++)
+            {
+                if (i != idx)
+                {
+                    menu.Items[i + menuLibIdx].ForeColor = SystemColors.ControlText;
+                    menu.Items[i + menuLibIdx].BackColor = SystemColors.Control;
+                }
+                else
+                {
+                    menu.Items[i + menuLibIdx].ForeColor = Color.White;
+                    menu.Items[i + menuLibIdx].BackColor = Color.DodgerBlue;
+                }
+            }
+            currentSubSet = idx;
         }
 
         private void SetLoadedMenu()
