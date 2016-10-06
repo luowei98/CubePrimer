@@ -50,6 +50,9 @@ namespace RobertLw.Interest.CubePrimer
             }
         }
 
+        private List<CmbItem> currentStepSet;
+        private int currentSubSet = -1;
+
         #endregion
 
         #region public, internal fields
@@ -189,7 +192,10 @@ namespace RobertLw.Interest.CubePrimer
                 }
 
                 // reload ani & flv
-                int selIdx = (int)Settings.Default.ListSelectedIndex[comboContents.SelectedIndex];
+                // todo deletel
+                //int selIdx = (int)Settings.Default.ListSelectedIndex[comboContents.SelectedIndex];
+                ////
+                int selIdx = (int)Settings.Default.ListSelectedIndex[currentSubSet];
                 listView.Items[0].Selected = true;
                 if (listView.Items.Count > selIdx)
                     listView.Items[selIdx].Selected = true;
@@ -238,64 +244,10 @@ namespace RobertLw.Interest.CubePrimer
             this.Cursor = Cursors.WaitCursor;
             statusLabel.Text = "载入手法库";
 
-            string fn;
-
-            CmbItem val = (CmbItem)comboContents.SelectedItem;
-            if (!val.ImgLoaded)
-            {
-                foreach (var ss in val.Value)
-                {
-                    fn = comboContents.Text + Path.DirectorySeparatorChar + ss[0].Trim();
-                    try
-                    {
-                        Image img = new Bitmap(fileDir + Path.DirectorySeparatorChar + fn + ".png");
-                        imageList.Images.Add(fn, img);
-                    }
-                    catch (Exception)
-                    {
-                        // ignored
-                    }
-                }
-                val.ImgLoaded = true;
-            }
-
-            listView.BeginUpdate();
-            listView.Groups.Clear();
-            listView.Items.Clear();
-
-            // 设置组
-            List<string> grpkey = val.Value.Select(ss => ss.Count >= 4 ? ss[3] : "未分组").ToList();
-
-            grpkey.Sort();
-            foreach (var g in grpkey.Distinct())
-                listView.Groups.Add(g, g);
-
-            // 添加显示项目
-            foreach (var ss in val.Value)
-            {
-                fn = comboContents.Text + Path.DirectorySeparatorChar + ss[0].Trim();
-                string txt = imageList.Images.IndexOfKey(fn) != -1 ? fn : "cube";
-                string grp = ss.Count >= 4 ? ss[3] : "未分组";
-
-                var lvi = new ListViewItem(ss[0] + "\r" + ss[2], txt, listView.Groups[grp])
-                {
-                    ToolTipText = ss[2],
-                    Tag = new[] {ss[0], ss[1], ss[2]}
-                };
-
-                listView.Items.Add(lvi);
-                //listView.Update();
-                //Application.DoEvents();
-            }
-            listView.EndUpdate();
-
-            Settings.Default.ContentsIndex = comboContents.SelectedIndex;
-
-            // 设置左侧项目选择
-            int selIdx = (int)Settings.Default.ListSelectedIndex[comboContents.SelectedIndex];
-            listView.ExpandCollapseGroup(listView.Items[selIdx].Group);
-            listView.EnsureVisible(selIdx);
-            listView.Items[selIdx].Selected = true;
+            // todo delete
+            //LoadSubStepSet((CmbItem) comboContents.SelectedItem);
+            ////
+            LoadSubStepSet(currentStepSet[currentSubSet]);
 
             this.Cursor = Cursors.Default;
             statusLabel.Text = "";
@@ -345,7 +297,10 @@ namespace RobertLw.Interest.CubePrimer
                 }
 
                 // 保存选择位置
-                Settings.Default.ListSelectedIndex[comboContents.SelectedIndex] = e.ItemIndex;
+                // todo delete
+                //Settings.Default.ListSelectedIndex[comboContents.SelectedIndex] = e.ItemIndex;
+                ////
+                Settings.Default.ListSelectedIndex[currentSubSet] = e.ItemIndex;
             }
         }
 
@@ -459,8 +414,14 @@ namespace RobertLw.Interest.CubePrimer
             //{
             //    while (reader.ReadLine() != null) { lines++; }
             //}
+            // todo delete
+            //comboContents.Items.Clear();
+            ////
+            if (currentStepSet == null)
+                currentStepSet = new List<CmbItem>();
+            else
+                currentStepSet.Clear();
 
-            comboContents.Items.Clear();
             //int i = 0;
             foreach (var l in LineReader(file))
             {
@@ -469,22 +430,46 @@ namespace RobertLw.Interest.CubePrimer
 
                 if (char.IsWhiteSpace(l, 0))
                 {
-                    if (comboContents.Items.Count != 0)
+                    // todo delete
+                    //if (comboContents.Items.Count != 0)
+                    //{
+                    //    CmbItem v = (CmbItem) comboContents.Items[comboContents.Items.Count - 1];
+                    //    v.Value.Add(new List<string>(l.Split(',')));
+                    //}
+                    ////
+                    if (currentStepSet.Count != 0)
                     {
-                        CmbItem v = (CmbItem)comboContents.Items[comboContents.Items.Count - 1];
+                        CmbItem v = currentStepSet.Last();
                         v.Value.Add(new List<string>(l.Split(',')));
                     }
                 }
                 else
-                    comboContents.Items.Add(new CmbItem(l));
+                {
+                    // todo delete
+                    //comboContents.Items.Add(new CmbItem(l));
+                    ////
+                    currentStepSet.Add(new CmbItem(l));
+                    var mnu = new ToolStripMenuItem(l);
+                    menu.Items.Insert(1, mnu);
+                }
             }
 
             // 设置子库选择
+            // todo deltel
+            //if (!isInit ||
+            //    Settings.Default.ListSelectedIndex == null ||
+            //    Settings.Default.ListSelectedIndex.Count != comboContents.Items.Count)
+            //    Settings.Default.ListSelectedIndex = new ArrayList(new int[comboContents.Items.Count]);
+            //comboContents.SelectedIndex = comboContents.Items.Count > subLib ? subLib : 0;
+            ////
             if (!isInit ||
                 Settings.Default.ListSelectedIndex == null ||
-                Settings.Default.ListSelectedIndex.Count != comboContents.Items.Count)
-                Settings.Default.ListSelectedIndex = new ArrayList(new int[comboContents.Items.Count]);
-            comboContents.SelectedIndex = comboContents.Items.Count > subLib ? subLib : 0;
+                Settings.Default.ListSelectedIndex.Count != currentStepSet.Count)
+                Settings.Default.ListSelectedIndex = new ArrayList(new int[currentStepSet.Count]);
+            
+            currentSubSet = currentStepSet.Count > subLib ? subLib : 0;
+            LoadSubStepSet(currentStepSet[currentSubSet]);
+            
 
             return true;
         }
@@ -498,6 +483,79 @@ namespace RobertLw.Interest.CubePrimer
                     if (line.Length > 0 && !line.StartsWith(Common.COMM_CHAR))
                         yield return line.TrimEnd();
             }
+        }
+
+        private void LoadSubStepSet(CmbItem setpSet)
+        {
+            string fn;
+
+            if (!setpSet.ImgLoaded)
+            {
+                foreach (var ss in setpSet.Value)
+                {
+                    // todo delete
+                    //fn = comboContents.Text + Path.DirectorySeparatorChar + ss[0].Trim();
+                    ////
+                    fn = setpSet.ToString() + Path.DirectorySeparatorChar + ss[0].Trim();
+                    try
+                    {
+                        Image img = new Bitmap(fileDir + Path.DirectorySeparatorChar + fn + ".png");
+                        imageList.Images.Add(fn, img);
+                    }
+                    catch (Exception)
+                    {
+                        // ignored
+                    }
+                }
+                setpSet.ImgLoaded = true;
+            }
+
+            listView.BeginUpdate();
+            listView.Groups.Clear();
+            listView.Items.Clear();
+
+            // 设置组
+            List<string> grpkey = setpSet.Value.Select(ss => ss.Count >= 4 ? ss[3] : "未分组").ToList();
+
+            grpkey.Sort();
+            foreach (var g in grpkey.Distinct())
+                listView.Groups.Add(g, g);
+
+            // 添加显示项目
+            foreach (var ss in setpSet.Value)
+            {
+                // todo delete
+                //fn = comboContents.Text + Path.DirectorySeparatorChar + ss[0].Trim();
+                ////
+                fn = setpSet.ToString() + Path.DirectorySeparatorChar + ss[0].Trim();
+                string txt = imageList.Images.IndexOfKey(fn) != -1 ? fn : "cube";
+                string grp = ss.Count >= 4 ? ss[3] : "未分组";
+
+                var lvi = new ListViewItem(ss[0] + "\r" + ss[2], txt, listView.Groups[grp])
+                {
+                    ToolTipText = ss[2],
+                    Tag = new[] { ss[0], ss[1], ss[2] }
+                };
+
+                listView.Items.Add(lvi);
+                //listView.Update();
+                //Application.DoEvents();
+            }
+            listView.EndUpdate();
+
+            // todo delete
+            //Settings.Default.ContentsIndex = comboContents.SelectedIndex;
+            ////
+            Settings.Default.ContentsIndex = currentSubSet;
+
+            // 设置左侧项目选择
+            // todo delete
+            //int selIdx = (int)Settings.Default.ListSelectedIndex[comboContents.SelectedIndex];
+            ////
+            int selIdx = (int)Settings.Default.ListSelectedIndex[currentSubSet];
+            listView.ExpandCollapseGroup(listView.Items[selIdx].Group);
+            listView.EnsureVisible(selIdx);
+            listView.Items[selIdx].Selected = true;
         }
 
         private void SetLoadedMenu()
@@ -747,7 +805,10 @@ namespace RobertLw.Interest.CubePrimer
 
         private string GetSelectedNo()
         {
-            CmbItem cmbItem = (CmbItem)comboContents.SelectedItem;
+            // todo delete
+            //CmbItem cmbItem = (CmbItem)comboContents.SelectedItem;
+            ////
+            CmbItem cmbItem = currentStepSet[currentSubSet];
             if (cmbItem == null) return "";
 
             ListView.SelectedListViewItemCollection lsvItems = listView.SelectedItems;

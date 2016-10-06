@@ -53,8 +53,8 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.webBrowser = new System.Windows.Forms.WebBrowser();
-            this.listView = new Controls.ListViewEx();
-            this.cubeView = new Controls.CubeView();
+            this.listView = new RobertLw.Interest.CubePrimer.Controls.ListViewEx();
+            this.cubeView = new RobertLw.Interest.CubePrimer.Controls.CubeView();
             this.menu.SuspendLayout();
             this.status.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitAll)).BeginInit();
@@ -139,6 +139,7 @@
             // 
             // menuItemOption
             // 
+            this.menuItemOption.BackColor = System.Drawing.SystemColors.Control;
             this.menuItemOption.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuItemAnim,
             this.menuItemSteps,
@@ -151,7 +152,7 @@
             // menuItemAnim
             // 
             this.menuItemAnim.Name = "menuItemAnim";
-            this.menuItemAnim.Size = new System.Drawing.Size(149, 22);
+            this.menuItemAnim.Size = new System.Drawing.Size(152, 22);
             this.menuItemAnim.Tag = "nodeAnim";
             this.menuItemAnim.Text = "动画参数(&A)...";
             this.menuItemAnim.Click += new System.EventHandler(this.menuItemOptionSub_Click);
@@ -159,7 +160,7 @@
             // menuItemSteps
             // 
             this.menuItemSteps.Name = "menuItemSteps";
-            this.menuItemSteps.Size = new System.Drawing.Size(149, 22);
+            this.menuItemSteps.Size = new System.Drawing.Size(152, 22);
             this.menuItemSteps.Tag = "nodeSteps";
             this.menuItemSteps.Text = "步骤参数(&S)...";
             this.menuItemSteps.Click += new System.EventHandler(this.menuItemOptionSub_Click);
@@ -167,12 +168,12 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(146, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
             // 
             // menuItemShortcuts
             // 
             this.menuItemShortcuts.Name = "menuItemShortcuts";
-            this.menuItemShortcuts.Size = new System.Drawing.Size(149, 22);
+            this.menuItemShortcuts.Size = new System.Drawing.Size(152, 22);
             this.menuItemShortcuts.Tag = "nodeShortcuts";
             this.menuItemShortcuts.Text = "快捷键(&C)...";
             this.menuItemShortcuts.Click += new System.EventHandler(this.menuItemOptionSub_Click);
@@ -205,9 +206,9 @@
             // 
             // splitAll
             // 
-            this.splitAll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitAll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.splitAll.DataBindings.Add(new System.Windows.Forms.Binding("SplitterDistance", global::RobertLw.Interest.CubePrimer.Properties.Settings.Default, "SplitAllDistance", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.splitAll.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.splitAll.Location = new System.Drawing.Point(0, 32);
@@ -272,7 +273,7 @@
             this.webBrowser.Name = "webBrowser";
             this.webBrowser.ScriptErrorsSuppressed = true;
             this.webBrowser.ScrollBarsEnabled = false;
-            this.webBrowser.Size = new System.Drawing.Size(466, 322);
+            this.webBrowser.Size = new System.Drawing.Size(466, 326);
             this.webBrowser.TabIndex = 0;
             this.webBrowser.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.webBrowser_PreviewKeyDown);
             // 
@@ -297,6 +298,7 @@
             this.cubeView.BackColor = System.Drawing.SystemColors.Control;
             this.cubeView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cubeView.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.cubeView.HoverColor = System.Drawing.Color.Aqua;
             this.cubeView.Location = new System.Drawing.Point(0, 0);
             this.cubeView.Margin = new System.Windows.Forms.Padding(0);
             this.cubeView.Name = "cubeView";
@@ -309,8 +311,8 @@
             this.cubeView.StepsNextColor = System.Drawing.Color.Yellow;
             this.cubeView.TabIndex = 2;
             this.cubeView.Zoom = 57.14286F;
-            this.cubeView.OnOptionAnim += new Controls.CubeView.OptionAnimEvent(this.cubeView_OnOptionAnim);
-            this.cubeView.OnOptionSteps += new Controls.CubeView.OptionStepsEvent(this.cubeView_OnOptionSteps);
+            this.cubeView.OnOptionAnim += new RobertLw.Interest.CubePrimer.Controls.CubeView.OptionAnimEvent(this.cubeView_OnOptionAnim);
+            this.cubeView.OnOptionSteps += new RobertLw.Interest.CubePrimer.Controls.CubeView.OptionStepsEvent(this.cubeView_OnOptionSteps);
             // 
             // MainForm
             // 
