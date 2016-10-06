@@ -81,6 +81,8 @@ namespace RobertLw.Interest.CubePrimer.Data
         private int[, , ,] model;
         private string stepString;
 
+        // ReSharper disable once NotAccessedField.Local
+        // 括号中的步法组开始、结束步数
         private int[] stepGroup;
 
         private MOVE_DIREC moveFlg;
@@ -401,7 +403,7 @@ namespace RobertLw.Interest.CubePrimer.Data
                 else
                     return new { idx = n, val = v, flg = LEGAL_CHAR.Contains(v) };
             }
-            ).Where(itm => itm != null);
+            ).Where(itm => itm != null).ToList();
 
             Steps = q.GroupBy(itm => itm.idx)
                      .Select(grp => string.Join("", grp.Select(g => g.val).ToArray()))

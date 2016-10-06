@@ -80,5 +80,12 @@ namespace RobertLw.Interest.CubePrimer
     public static class GlobalValue
     {
         public static float MinFloat = 0.0001f;
+
+        //public static void Swap(ref int x, ref int y)
+        //{
+        //    int temp = x;
+        //    x = y;
+        //    y = temp;
+        //}
     }
 }

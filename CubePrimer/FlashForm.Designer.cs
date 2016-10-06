@@ -39,7 +39,6 @@
             this.Name = "FlashForm";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.TopMost = true;
             this.Load += new System.EventHandler(this.FlashForm_Load);
             this.ResumeLayout(false);
 

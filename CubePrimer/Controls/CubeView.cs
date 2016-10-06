@@ -475,8 +475,10 @@ namespace RobertLw.Interest.CubePrimer.Controls
 
         private void stepView_OnMove2Event(object sender, StepView.Move2EventArgs e)
         {
-            MessageBox.Show(e.Move2StepIdx.ToString());
-
+            if (e.Move2StepIdx > cubeData.StepNo)
+                while (cubeData.StepNo < e.Move2StepIdx) this.Set2Next();
+            else if (e.Move2StepIdx < cubeData.StepNo)
+                while (cubeData.StepNo > e.Move2StepIdx) this.Set2Back();
         }
     }
 }

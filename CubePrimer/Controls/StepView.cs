@@ -15,7 +15,8 @@ namespace RobertLw.Interest.CubePrimer.Controls
         private PointF origin;
         // 每一步的区域
         private RectangleF[] stepsLocation;
-
+        // 鼠标所指步数
+        private int hoverIdx = -1;
         #endregion
 
         #region event fields
@@ -83,6 +84,8 @@ namespace RobertLw.Interest.CubePrimer.Controls
 
         public Color NextColor { get; set; }
 
+        public Color HoverColor { get; set; }
+
         public bool IsContinue { get; set; }
 
         #endregion
@@ -93,6 +96,7 @@ namespace RobertLw.Interest.CubePrimer.Controls
             InitializeComponent();
             MovingColor = Color.Red;
             NextColor = Color.Yellow;
+            HoverColor = Color.LightSeaGreen;
         }
 
         #endregion
@@ -118,12 +122,18 @@ namespace RobertLw.Interest.CubePrimer.Controls
                 stepIdx = Data.NextStepStrIdx;
             }
 
-            // 显示除下一步字符串外的所有步骤字符串
-            string s = Data.StepString.Substring(0, stepIdx) +
-                       "".PadRight(step.Length) +
-                       Data.StepString.Substring(stepIdx + step.Length);
+            // 显示除下一步字符串外的所有步骤字符串，如果有鼠标覆盖，也跳过鼠标覆盖步法
+            //string s = Data.StepString.Substring(0, stepIdx) +
+            //           "".PadRight(step.Length) +
+            //           Data.StepString.Substring(stepIdx + step.Length);
+            string s = BuildPaintStep(Data.StepString, stepIdx, step.Length);
+            if (hoverIdx != -1)
+            {
+                s = BuildPaintStep(s, Data.StepIndexs[hoverIdx], Data.Steps[hoverIdx].Length);
+            }
             e.Graphics.DrawString(s, this.Font, new SolidBrush(this.ForeColor), origin);
 
+            // 区别颜色画当前步法
             // 已走步骤字符串大小
             SizeF szDone = MeasureSize(e.Graphics,
                                        this.Font,
@@ -137,6 +147,15 @@ namespace RobertLw.Interest.CubePrimer.Controls
                                   this.Font,
                                   new SolidBrush(c),
                                   new PointF(origin.X + szDone.Width, origin.Y));
+
+            // 如果有鼠标覆盖，区别颜色画出
+            if (hoverIdx != -1)
+            {
+                e.Graphics.DrawString(Data.Steps[hoverIdx],
+                                      this.Font,
+                                      new SolidBrush(HoverColor),
+                                      new PointF(stepsLocation[hoverIdx].X, stepsLocation[hoverIdx].Y));
+            }
         }
 
         protected override void OnResize(EventArgs e)
@@ -236,22 +255,21 @@ namespace RobertLw.Interest.CubePrimer.Controls
 
         private void StepView_MouseClick(object sender, MouseEventArgs e)
         {
-            if (e.X < origin.X || e.Y < origin.Y ||
-                e.X > origin.X + textArea.Width || e.Y > origin.Y + textArea.Height)
-            {
-                return;
-            }
-
             var idx = Point2StepIdx(new PointF(e.X, e.Y));
             if (idx < Data.StepsCount && idx != Data.StepNo)
             {
                 OnMove2Event?.Invoke(sender, new Move2EventArgs(idx));
             }
-
         }
 
         private int Point2StepIdx(PointF point)
         {
+            if (point.X < origin.X || point.Y < origin.Y ||
+                point.X > origin.X + textArea.Width || point.Y > origin.Y + textArea.Height)
+            {
+                return Data.StepsCount;
+            }
+
             int i = 0;
             for (; i < stepsLocation.Length; i++)
             {
@@ -265,6 +283,32 @@ namespace RobertLw.Interest.CubePrimer.Controls
             }
 
             return i;
+        }
+
+        private void StepView_MouseMove(object sender, MouseEventArgs e)
+        {
+            var idx = Point2StepIdx(new PointF(e.X, e.Y));
+            if (idx < Data.StepsCount && idx != Data.StepNo)
+            {
+                if (idx != hoverIdx)
+                {
+                    hoverIdx = idx;
+                    this.Refresh();
+                }
+            }
+            else
+            {
+                hoverIdx = -1;
+                this.Refresh();
+            }
+        }
+
+        private string BuildPaintStep(string steps, int idx, int len)
+        {
+            var s1 = steps.Substring(0, idx);
+            var s2 = steps.Substring(idx + len);
+
+            return s1 + "".PadRight(len) + s2;
         }
     }
 }
