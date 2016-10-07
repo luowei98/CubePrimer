@@ -239,19 +239,11 @@ namespace RobertLw.Interest.CubePrimer
 
         private void menuItemSubLib_Click(object sender, EventArgs e)
         {
-            setCurrentLibIdx((int) ((ToolStripMenuItem) sender).Tag);
+            var idx = (int) ((ToolStripMenuItem) sender).Tag;
+            if (idx == currSubLibIdx) return;
+
+            SetCurrSubLibIdx(idx);
             LoadSubLib(currentLib[currSubLibIdx]);
-        }
-
-        private void comboContents_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            this.Cursor = Cursors.WaitCursor;
-            statusLabel.Text = "载入手法库";
-
-            LoadSubLib(currentLib[currSubLibIdx]);
-
-            this.Cursor = Cursors.Default;
-            statusLabel.Text = "";
         }
 
         private void listView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
@@ -437,7 +429,7 @@ namespace RobertLw.Interest.CubePrimer
                 Settings.Default.ListSelectedIndex.Count != currentLib.Count)
                 Settings.Default.ListSelectedIndex = new ArrayList(new int[currentLib.Count]);
             
-            setCurrentLibIdx(currentLib.Count > subLib ? subLib : 0);
+            SetCurrSubLibIdx(currentLib.Count > subLib ? subLib : 0);
             LoadSubLib(currentLib[currSubLibIdx]);
             
             return true;
@@ -456,6 +448,9 @@ namespace RobertLw.Interest.CubePrimer
 
         private void LoadSubLib(LibItem item)
         {
+            this.Cursor = Cursors.WaitCursor;
+            statusLabel.Text = "载入手法库";
+
             string fn;
 
             if (!item.ImgLoaded)
@@ -513,9 +508,12 @@ namespace RobertLw.Interest.CubePrimer
             listView.ExpandCollapseGroup(listView.Items[selIdx].Group);
             listView.EnsureVisible(selIdx);
             listView.Items[selIdx].Selected = true;
+
+            this.Cursor = Cursors.Default;
+            statusLabel.Text = "";
         }
 
-        private void setCurrentLibIdx(int idx)
+        private void SetCurrSubLibIdx(int idx)
         {
             for (int i = 0; i < currentLib.Count; i++)
             {
@@ -903,7 +901,6 @@ namespace RobertLw.Interest.CubePrimer
         }
 
         #endregion
-
     }
 
 }
