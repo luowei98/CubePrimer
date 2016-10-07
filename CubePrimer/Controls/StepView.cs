@@ -198,6 +198,15 @@ namespace RobertLw.Interest.CubePrimer.Controls
             }
         }
 
+        private void StepView_MouseLeave(object sender, EventArgs e)
+        {
+            if (hoverIdx != -1)
+            {
+                hoverIdx = -1;
+                this.Refresh();
+            }
+        }
+
         #endregion
 
         #region public methods
