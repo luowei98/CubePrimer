@@ -420,6 +420,12 @@ namespace RobertLw.Interest.CubePrimer
             else
                 currentLib.Clear();
 
+            // clear menu of lib
+            menu.Items.Clear();
+            menu.Items.Add(menuItemFile);
+            menu.Items.Add(menuItemOption);
+
+
             int i = menuSubLibIdx;
             foreach (var l in LineReader(file))
             {
