@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -21,7 +20,8 @@ namespace RobertLw.Interest.CubePrimer
         #region private fields
 
         private string fileDir = "";
-        private ArrayList loadedFiles = new ArrayList();
+        //private ArrayList loadedFiles = new ArrayList();
+        private List<string> loadedFiles = new List<string>();
 
         private string playerDoc;
         private string errDoc;
@@ -89,7 +89,9 @@ namespace RobertLw.Interest.CubePrimer
             this.Visible = false;
 
             // 恢复打开文件历史
-            loadedFiles = Settings.Default.LoadedFiles ?? new ArrayList();
+            loadedFiles = string.IsNullOrEmpty(Settings.Default.LoadedFiles)
+                ? new List<string>()
+                : Settings.Default.LoadedFiles.Split('|').ToList();
             SetLoadedMenu();
 
             // 初始化 Flash 播放器
@@ -98,7 +100,7 @@ namespace RobertLw.Interest.CubePrimer
             // 读取最后一次打开的文件
             if (loadedFiles.Count > 0)
             {
-                if (!LoadFile((string)loadedFiles[loadedFiles.Count - 1],
+                if (!LoadFile(loadedFiles[loadedFiles.Count - 1],
                               Settings.Default.ContentsIndex,
                               true))
                 {
@@ -171,7 +173,7 @@ namespace RobertLw.Interest.CubePrimer
                 {
                     loadedFiles.Add(openFileDialog.FileName);
                     SetLoadedMenu();
-                    Settings.Default.LoadedFiles = loadedFiles;
+                    Settings.Default.LoadedFiles = string.Join("|", loadedFiles);
                 }
                 else
                 {
@@ -182,12 +184,12 @@ namespace RobertLw.Interest.CubePrimer
                 }
             }
         }
-
+        
         private void menuItemReload_Click(object sender, EventArgs e)
         {
             if (loadedFiles.Count > 0)
             {
-                if (!LoadFile((string)loadedFiles[loadedFiles.Count - 1],
+                if (!LoadFile(loadedFiles[loadedFiles.Count - 1],
                               Settings.Default.ContentsIndex,
                               true))
                 {
@@ -198,9 +200,12 @@ namespace RobertLw.Interest.CubePrimer
                     loadedFiles.RemoveAt(loadedFiles.Count - 1);
                     SetLoadedMenu();
                 }
-
+                
                 // reload ani & flv
-                int selIdx = (int)Settings.Default.ListSelectedIndex[currSubLibIdx];
+                int selIdx = Settings.Default.ListSelectedIndex
+                    .Split(',')
+                    .Select(int.Parse)
+                    .ToArray()[currSubLibIdx];
                 listView.Items[0].Selected = true;
                 if (listView.Items.Count > selIdx)
                     listView.Items[selIdx].Selected = true;
@@ -215,7 +220,8 @@ namespace RobertLw.Interest.CubePrimer
         private void menuItemClearHistroy_Click(object sender, EventArgs e)
         {
             loadedFiles.Clear();
-            Settings.Default.LoadedFiles.Clear();
+            //Settings.Default.LoadedFiles.Clear();
+            Settings.Default.LoadedFiles = string.Empty;
             ClearHistoryMenu();
         }
 
@@ -224,7 +230,7 @@ namespace RobertLw.Interest.CubePrimer
             string s = ((ToolStripItem)sender).Text;
 
             int i = int.Parse(s.Substring(0, s.IndexOf(' '))) - 1;
-            string fn = (string)loadedFiles[i];
+            string fn = loadedFiles[i];
 
             if (LoadFile(fn))
             {
@@ -297,7 +303,12 @@ namespace RobertLw.Interest.CubePrimer
                 }
 
                 // 保存选择位置
-                Settings.Default.ListSelectedIndex[currSubLibIdx] = e.ItemIndex;
+                int[] idx = Settings.Default.ListSelectedIndex
+                    .Split(',')
+                    .Select(int.Parse)
+                    .ToArray();
+                idx[currSubLibIdx] = e.ItemIndex;
+                Settings.Default.ListSelectedIndex = string.Join(",", idx.Select(i => i.ToString()).ToArray());
             }
         }
 
@@ -430,11 +441,24 @@ namespace RobertLw.Interest.CubePrimer
             }
 
             // 设置子库选择
-            if (!isInit ||
-                Settings.Default.ListSelectedIndex == null ||
-                Settings.Default.ListSelectedIndex.Count != currentLib.Count)
-                Settings.Default.ListSelectedIndex = new ArrayList(new int[currentLib.Count]);
-            
+            if (!isInit || string.IsNullOrEmpty(Settings.Default.ListSelectedIndex))
+            {
+                var idx = new int[currentLib.Count];
+                Settings.Default.ListSelectedIndex = string.Join(",", idx.Select(j => j.ToString()).ToArray());
+            }
+            else
+            {
+                int count = Settings.Default.ListSelectedIndex
+                    .Split(',')
+                    .Select(int.Parse)
+                    .Count();
+                if (count != currentLib.Count)
+                {
+                    var idx = new int[count];
+                    Settings.Default.ListSelectedIndex = string.Join(",", idx.Select(j => j.ToString()).ToArray());
+                }
+            }
+
             SetCurrSubLibIdx(currentLib.Count > subLib ? subLib : 0);
             LoadSubLib(currentLib[currSubLibIdx]);
             
@@ -510,7 +534,10 @@ namespace RobertLw.Interest.CubePrimer
             Settings.Default.ContentsIndex = currSubLibIdx;
 
             // 设置左侧项目选择
-            int selIdx = (int)Settings.Default.ListSelectedIndex[currSubLibIdx];
+            int selIdx = Settings.Default.ListSelectedIndex
+                    .Split(',')
+                    .Select(int.Parse)
+                    .ToArray()[currSubLibIdx];
             listView.ExpandCollapseGroup(listView.Items[selIdx].Group);
             listView.EnsureVisible(selIdx);
             listView.Items[selIdx].Selected = true;
@@ -543,7 +570,7 @@ namespace RobertLw.Interest.CubePrimer
             ClearHistoryMenu();
 
             int i = 1;
-            foreach (string item in loadedFiles)
+            foreach (var item in loadedFiles)
             {
                 ToolStripItem mnu = new ToolStripMenuItem();
                 mnu.Text = i++ + " " + CutPath(item, 48);

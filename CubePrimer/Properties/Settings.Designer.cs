@@ -61,9 +61,10 @@ namespace RobertLw.Interest.CubePrimer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Collections.ArrayList ListSelectedIndex {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ListSelectedIndex {
             get {
-                return ((global::System.Collections.ArrayList)(this["ListSelectedIndex"]));
+                return ((string)(this["ListSelectedIndex"]));
             }
             set {
                 this["ListSelectedIndex"] = value;
@@ -108,9 +109,10 @@ namespace RobertLw.Interest.CubePrimer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Collections.ArrayList LoadedFiles {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LoadedFiles {
             get {
-                return ((global::System.Collections.ArrayList)(this["LoadedFiles"]));
+                return ((string)(this["LoadedFiles"]));
             }
             set {
                 this["LoadedFiles"] = value;

@@ -11,7 +11,7 @@
     <Setting Name="SplitCollapsed" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="ListSelectedIndex" Type="System.Collections.ArrayList" Scope="User">
+    <Setting Name="ListSelectedIndex" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="MainFormLocation" Type="System.Drawing.Point" Scope="User">
@@ -23,7 +23,7 @@
     <Setting Name="MainFormState" Type="System.Windows.Forms.FormWindowState" Scope="User">
       <Value Profile="(Default)">Normal</Value>
     </Setting>
-    <Setting Name="LoadedFiles" Type="System.Collections.ArrayList" Scope="User">
+    <Setting Name="LoadedFiles" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="ViewSpeed" Type="System.Single" Scope="User">
