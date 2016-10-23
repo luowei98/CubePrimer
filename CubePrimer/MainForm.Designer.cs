@@ -48,12 +48,12 @@
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.splitAll = new System.Windows.Forms.SplitContainer();
-            this.listView = new RobertLw.Interest.CubePrimer.Controls.ListViewEx();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.cubeView = new RobertLw.Interest.CubePrimer.Controls.CubeView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.webBrowser = new System.Windows.Forms.WebBrowser();
+            this.listView = new RobertLw.Interest.CubePrimer.Controls.ListViewEx();
+            this.cubeView = new RobertLw.Interest.CubePrimer.Controls.CubeView();
             this.menu.SuspendLayout();
             this.status.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitAll)).BeginInit();
@@ -142,7 +142,7 @@
             // menuItemAnim
             // 
             this.menuItemAnim.Name = "menuItemAnim";
-            this.menuItemAnim.Size = new System.Drawing.Size(152, 22);
+            this.menuItemAnim.Size = new System.Drawing.Size(149, 22);
             this.menuItemAnim.Tag = "nodeAnim";
             this.menuItemAnim.Text = "动画参数(&A)...";
             this.menuItemAnim.Click += new System.EventHandler(this.menuItemOptionSub_Click);
@@ -150,7 +150,7 @@
             // menuItemSteps
             // 
             this.menuItemSteps.Name = "menuItemSteps";
-            this.menuItemSteps.Size = new System.Drawing.Size(152, 22);
+            this.menuItemSteps.Size = new System.Drawing.Size(149, 22);
             this.menuItemSteps.Tag = "nodeSteps";
             this.menuItemSteps.Text = "步骤参数(&S)...";
             this.menuItemSteps.Click += new System.EventHandler(this.menuItemOptionSub_Click);
@@ -158,12 +158,12 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(146, 6);
             // 
             // menuItemShortcuts
             // 
             this.menuItemShortcuts.Name = "menuItemShortcuts";
-            this.menuItemShortcuts.Size = new System.Drawing.Size(152, 22);
+            this.menuItemShortcuts.Size = new System.Drawing.Size(149, 22);
             this.menuItemShortcuts.Tag = "nodeShortcuts";
             this.menuItemShortcuts.Text = "快捷键(&C)...";
             this.menuItemShortcuts.Click += new System.EventHandler(this.menuItemOptionSub_Click);
@@ -219,22 +219,6 @@
             this.splitAll.MouseMove += new System.Windows.Forms.MouseEventHandler(this.splitAll_MouseMove);
             this.splitAll.MouseUp += new System.Windows.Forms.MouseEventHandler(this.splitAll_MouseUp);
             // 
-            // listView
-            // 
-            this.listView.Activation = System.Windows.Forms.ItemActivation.OneClick;
-            this.listView.Collapsible = true;
-            this.listView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView.HideSelection = false;
-            this.listView.LargeImageList = this.imageList;
-            this.listView.Location = new System.Drawing.Point(0, 0);
-            this.listView.MultiSelect = false;
-            this.listView.Name = "listView";
-            this.listView.ShowItemToolTips = true;
-            this.listView.Size = new System.Drawing.Size(300, 358);
-            this.listView.TabIndex = 0;
-            this.listView.UseCompatibleStateImageBehavior = false;
-            this.listView.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.listView_ItemSelectionChanged);
-            // 
             // tabControl
             // 
             this.tabControl.Controls.Add(this.tabPage1);
@@ -257,6 +241,47 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "动画";
             // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.webBrowser);
+            this.tabPage2.Location = new System.Drawing.Point(4, 26);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(472, 328);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "视频";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // webBrowser
+            // 
+            this.webBrowser.AllowNavigation = false;
+            this.webBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.webBrowser.IsWebBrowserContextMenuEnabled = false;
+            this.webBrowser.Location = new System.Drawing.Point(3, 3);
+            this.webBrowser.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowser.Name = "webBrowser";
+            this.webBrowser.ScriptErrorsSuppressed = true;
+            this.webBrowser.Size = new System.Drawing.Size(466, 322);
+            this.webBrowser.TabIndex = 0;
+            this.webBrowser.Navigated += new System.Windows.Forms.WebBrowserNavigatedEventHandler(this.webBrowser_Navigated);
+            this.webBrowser.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.webBrowser_PreviewKeyDown);
+            // 
+            // listView
+            // 
+            this.listView.Activation = System.Windows.Forms.ItemActivation.OneClick;
+            this.listView.Collapsible = true;
+            this.listView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView.HideSelection = false;
+            this.listView.LargeImageList = this.imageList;
+            this.listView.Location = new System.Drawing.Point(0, 0);
+            this.listView.MultiSelect = false;
+            this.listView.Name = "listView";
+            this.listView.ShowItemToolTips = true;
+            this.listView.Size = new System.Drawing.Size(300, 358);
+            this.listView.TabIndex = 0;
+            this.listView.UseCompatibleStateImageBehavior = false;
+            this.listView.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.listView_ItemSelectionChanged);
+            // 
             // cubeView
             // 
             this.cubeView.BackColor = System.Drawing.SystemColors.Control;
@@ -277,32 +302,6 @@
             this.cubeView.Zoom = 57.14286F;
             this.cubeView.OnOptionAnim += new RobertLw.Interest.CubePrimer.Controls.CubeView.OptionAnimEvent(this.cubeView_OnOptionAnim);
             this.cubeView.OnOptionSteps += new RobertLw.Interest.CubePrimer.Controls.CubeView.OptionStepsEvent(this.cubeView_OnOptionSteps);
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.Controls.Add(this.webBrowser);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(472, 332);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "视频";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // webBrowser
-            // 
-            this.webBrowser.AllowNavigation = false;
-            this.webBrowser.AllowWebBrowserDrop = false;
-            this.webBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.webBrowser.IsWebBrowserContextMenuEnabled = false;
-            this.webBrowser.Location = new System.Drawing.Point(3, 3);
-            this.webBrowser.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webBrowser.Name = "webBrowser";
-            this.webBrowser.ScriptErrorsSuppressed = true;
-            this.webBrowser.ScrollBarsEnabled = false;
-            this.webBrowser.Size = new System.Drawing.Size(466, 326);
-            this.webBrowser.TabIndex = 0;
-            this.webBrowser.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.webBrowser_PreviewKeyDown);
             // 
             // MainForm
             // 

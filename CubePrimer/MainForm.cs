@@ -124,6 +124,13 @@ namespace RobertLw.Interest.CubePrimer
                 listView.SelectedItems[0].Focused = true;
         }
 
+        private void webBrowser_Navigated(object sender, WebBrowserNavigatedEventArgs e)
+        {
+            // remove COM Exception from form load, see https://social.msdn.microsoft.com/Forums/vstudio/en-US/6f495461-7190-4bdd-8a0f-5d13122d18a6/webbrowser-control-creates-com-exception?forum=csharpgeneral
+            webBrowser.AllowWebBrowserDrop = false;
+            webBrowser.ScrollBarsEnabled = false;
+        }
+
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             SaveViewSetting();
@@ -416,8 +423,7 @@ namespace RobertLw.Interest.CubePrimer
                 else
                 {
                     currentLib.Add(new LibItem(l));
-                    var mnu = new ToolStripMenuItem(l);
-                    mnu.Tag = i - menuSubLibIdx;
+                    var mnu = new ToolStripMenuItem(l) {Tag = i - menuSubLibIdx};
                     mnu.Click += menuItemSubLib_Click;
                     menu.Items.Insert(i++, mnu);
                 }
